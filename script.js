@@ -1,4 +1,9 @@
+// Modules
 const fs = require('fs')
+const express = require('express')
+
+const app = express()
+const PORT = process.env.PORT || 8080
 
 class Container{
   constructor(name, fileURL){
@@ -75,41 +80,25 @@ class Container{
   }
 }
 
+const productsContainer = new Container('products', './products.txt')
 
-const test = async () => {
-  // Create a products countainer
-  console.log('1-')
-  productsContainer = new Container("products", "./products.txt")
-  // Getting all items just to check it's empty (please delete products file on first run, just for testing purposes)  
-  let products = await productsContainer.getAll() 
-  console.log(products, '\n\n')
-  
-  // Adding 4 produts to the file
-  console.log('2-')
-  const prod1 = {name:'keyboard', price: 1200, thumbnail:'fakeurl.com'}
-  const prod2 = {name:'mouse', price: 1000, thumbnail:'fakeurl.com'}
-  const prod3 = {name:'display', price: 2000, thumbnail:'fakeurl.com'}
-  const prod4 = {name:'headset', price: 500, thumbnail:'fakeurl.com'}
-  await productsContainer.save(prod1)
-  await productsContainer.save(prod2)
-  await productsContainer.save(prod3)
-  await productsContainer.save(prod4)
-  // Checking if products were added correctly..
-  products = await productsContainer.getAll()
-  console.log(products, '\n\n')
+app.get('/productos', async (req, res) => {
+  const products = await productsContainer.getAll()
+  res.json(products)
+})
 
-  //Getting one product only and then deleting it
-  console.log('3-')
-  const pro = await productsContainer.getById(2)
-  console.log(pro)
-  await productsContainer.deleteById(pro.id) 
-  products = await productsContainer.getAll() 
-  console.log(products, '\n\n')
-  
-  // Deleting all products
-  console.log('4-')
-  await productsContainer.deleteAll()
-  products = await productsContainer.getAll() 
-  console.log(products, '\n\n')
-}
-test()
+app.get('/', async (req, res) => {
+  const products = await productsContainer.getAll()
+  res.json(products)
+})
+
+app.get('/productoRandom', async (req, res) => {
+  const randomNum = max => Math.floor(Math.random() * max)
+  const products = await productsContainer.getAll()
+  res.json(products[randomNum(products.length)])
+})
+
+const server = app.listen(PORT, () => {
+  console.log(`App listening on port http://localhost:${PORT}`)
+
+})
