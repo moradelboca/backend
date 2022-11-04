@@ -1,104 +1,63 @@
 // Modules
-const fs = require('fs')
 const express = require('express')
+const multer = require('multer')
+const { Router } = express
+const Container = require('./classContainer')
 
 const app = express()
 const PORT = process.env.PORT || 8080
-
-class Container{
-  constructor(name, fileURL){
-    this.name = name
-    this.fileURL = fileURL
+const productsRouter = Router()
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) { cb(null, 'uploads') },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname +
+        '-' +
+        Date.now() +
+        '.' +
+        file.originalname.split('.').pop()
+    )
   }
-  async checkExistance(){
-    try{
-      await fs.promises.access(this.fileURL, fs.constants.R_OK | fs.constants.W_OK)
-      return
-    }
-    catch{
-      console.log('Error: File wasn\'t found.')
-      try{
-        await fs.promises.writeFile(this.fileURL, JSON.stringify([]))
-        console.log('File created successfully.')
-      }
-      catch{
-        console.log("Error: File couldn't be created.") 
-      }
-    }
-  }
-  async getAll(){
-    await this.checkExistance()
-    try{
-      const data = await fs.promises.readFile(this.fileURL, 'utf-8')
-      return JSON.parse(data)
-    }
-    catch (err){
-      console.log(`Error: ${err}`)
-      // Just to avoid future errors...
-      return []
-    }
-  }
-  async save(object){
-    await this.checkExistance()
-    const data = await this.getAll()
-    // Check if it's the first object...
-    let objectID = !data.length ? 1 : data[data.length-1].id+1
-    const newData = JSON.stringify([ ...data, {id:objectID, ...object } ])
-    try{
-      await fs.promises.writeFile(this.fileURL, newData)
-      return objectID
-    }
-    catch (err){
-      console.log(`Error: ${err}`)
-      return -1
-    }
-  }
-  async getById(objectID){
-    await this.checkExistance()
-    const data = await this.getAll()
-    return data.find( object => object.id == objectID) ?? -1
-  }
-  async deleteById(objectID){
-    await this.checkExistance()
-    const data = await this.getAll()
-    const newData = JSON.stringify(data.filter( object => object.id != objectID ))
-    try{
-      await fs.promises.writeFile(this.fileURL, newData)
-    }
-    catch (err){
-      console.log(`Error: ${err}`)
-    }
-  }
-  async deleteAll(){
-    await this.checkExistance()
-    try{
-      await fs.promises.writeFile(this.fileURL, JSON.stringify([]))
-    }
-    catch (err){
-      console.log(`Error: ${err}`)
-    }
-  }
-}
+})
+const upload = multer({ storage: storage })
 
 const productsContainer = new Container('products', './products.txt')
 
-app.get('/productos', async (req, res) => {
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use('/public', express.static(__dirname + '/public'))
+app.use('/api/products', productsRouter)
+
+app.listen(PORT, () => { console.log(`App listening on port http://localhost:${PORT}`) })
+
+productsRouter.get('/', async (req, res) => {
   const products = await productsContainer.getAll()
   res.json(products)
 })
-
-app.get('/', async (req, res) => {
+productsRouter.get('/:id', async (req, res) => {
+  const { id } = req.params
   const products = await productsContainer.getAll()
-  res.json(products)
+  const product = products.find( product => product.id == id )
+  res.json(product ? {success:true, product:product} : {success:false, msg:'Product wasn\'t found'})
 })
+productsRouter.post('/', async (req, res) => {
+  const { body } = req
+  if (body.hasOwnProperty('name') && body.hasOwnProperty('price') && body.hasOwnProperty('description') && body.hasOwnProperty('imageURL') && body.hasOwnProperty('category')){
+    const id = await productsContainer.save(body)
+    res.json(id ? {success:true, id:id} : {success:false, msg:'Product coundn\'t be added'})
+  }
+  else{
+    res.json({success:false, msg:'Missing product atributes'})
+  }
+})
+//
 
+app.get('/', (req, res) => { res.sendFile(__dirname + '/index.html') })
 app.get('/productoRandom', async (req, res) => {
   const randomNum = max => Math.floor(Math.random() * max)
   const products = await productsContainer.getAll()
   res.json(products[randomNum(products.length)])
 })
 
-const server = app.listen(PORT, () => {
-  console.log(`App listening on port http://localhost:${PORT}`)
-
-})
