@@ -48,6 +48,20 @@ class Container{
       return -1
     }
   }
+  async modify(objectID, newObject){
+    await this.checkExistance()
+    const data = await this.getAll()
+    const newData = JSON.stringify(data.map( object => {
+      if (object.id == objectID) {return newObject}
+      else {return object}
+    }))
+    try{
+      await fs.promises.writeFile(this.fileURL, newData)
+    }
+    catch (err){
+      console.log(`Error: ${err}`)
+    }
+  }
   async getById(objectID){
     await this.checkExistance()
     const data = await this.getAll()

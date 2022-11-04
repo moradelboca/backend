@@ -38,19 +38,24 @@ productsRouter.get('/', async (req, res) => {
 })
 productsRouter.get('/:id', async (req, res) => {
   const { id } = req.params
-  const products = await productsContainer.getAll()
-  const product = products.find( product => product.id == id )
+  const product = await productsContainer.getById(id)
   res.json(product ? {success:true, product:product} : {success:false, msg:'Product wasn\'t found'})
 })
 productsRouter.post('/', async (req, res) => {
   const { body } = req
-  if (body.hasOwnProperty('name') && body.hasOwnProperty('price') && body.hasOwnProperty('description') && body.hasOwnProperty('imageURL') && body.hasOwnProperty('category')){
-    const id = await productsContainer.save(body)
-    res.json(id ? {success:true, id:id} : {success:false, msg:'Product coundn\'t be added'})
-  }
-  else{
-    res.json({success:false, msg:'Missing product atributes'})
-  }
+  const id = await productsContainer.save(body)
+  res.json(id ? {success:true, id:id} : {success:false, msg:'Product coundn\'t be added'})
+})
+productsRouter.put('/:id', async (req, res) => {
+  const { body } = req
+  const { id } = req.params
+  const products = await productsContainer.modify(id, body)
+  res.json({success:true, newProduct:body})
+})
+productsRouter.delete('/:id', async (req, res) => {
+  const { id } = req.params
+  await productsContainer.deleteById(id)
+  res.json({success:true})
 })
 //
 
