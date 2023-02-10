@@ -1,5 +1,7 @@
 # Ejercicios Backend Coderhouse
 
-## Author: Mora del Boca José Ignacio
+Repositorio dedicado a subir los desafios de la cursada de backend. Cada desafio tiene dedicada una rama del repositorio.
 
 Entregas:
+
+- 1 - [Clases ECMAScript y ECMAScript avanzado](https://github.com/moradelboca/backend/tree/desafio1)
