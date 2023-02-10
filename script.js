@@ -18,6 +18,7 @@ class ProductManager{
   }
 }
 
+// Creating a class Product will avoid unnecesary atributes in each product. In this case, ill replace checking each if an input has all atributes using this concept.
 class Product{
   constructor(title, description, price, thumbnail, code, stock){
     this.title = title
