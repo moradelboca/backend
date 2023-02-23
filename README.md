@@ -5,4 +5,4 @@ Repositorio dedicado a subir los desafios de la cursada de backend. Cada desafio
 Entregas:
 
 - 1 - [Clases ECMAScript y ECMAScript avanzado](https://github.com/moradelboca/backend/tree/desafio1)
-- 2 - [Manejo de archivs](https://github.com/moradelboca/backend/tree/desafio2)
+- 2 - [Manejo de archivos](https://github.com/moradelboca/backend/tree/desafio2)
