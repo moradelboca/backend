@@ -1,4 +1,5 @@
 import { debug } from 'console'
+import { checkPrimeSync } from 'crypto'
 import fs from 'fs'
 
 class ProductManager{
@@ -8,7 +9,10 @@ class ProductManager{
   async addProduct(title, description, price, thumbnail, code, stock){
     const products = await this.getProducts()
     // Check if code isnt repeated
-    if (products.some( item => item.code === code )){return -1}
+    if (products.some( item => item.code === code )){
+      console.log('Error: Code is repeated!')
+      return -1
+    }
     // Generating ID
     let id = !products.length ? 1 : products[products.length-1].id+1
     const newProducts = JSON.stringify([ ...products, {id, title, description, price, thumbnail, code, stock } ])
@@ -34,7 +38,9 @@ class ProductManager{
   }
   async getProductByID(id){
     const data = await this.getProducts()
-    return data.find( product => product.id == id)
+    const product = data.find( product => product.id == id)
+    if(!product){console.log('Error: ID not found')}
+    return product
   }
   async deleteProduct(id){
     const data = await this.getProducts()
@@ -48,17 +54,19 @@ class ProductManager{
     }
   }
   async updateProduct(id, newPropierties){
-    // I think this is deficent... needs to be refactored!
-    const product = await this.getProductByID(id)
-    if (!product){return}
-    const newProduct = { ...product }
-    for (let property in newPropierties){
-      if(property in product && property != 'id'){newProduct[property] = newPropierties[property]}
-    }
     const data = await this.getProducts()
-    const newData = JSON.stringify(data.map( object =>  {
-      return (object.id === id) ? newProduct : object
+    const newData = JSON.stringify(data.map( product =>  {
+      // Product that needs to be modified.
+      if(product.id === id){
+        const newProduct = { ...product }
+        for (let property in newPropierties){
+          if(property in product && property != 'id'){newProduct[property] = newPropierties[property]}
+        }
+        return newProduct
+      }
+      return product
     }))
+    // Writing new data to file.
     try{
       await fs.promises.writeFile(this.path, newData)
     }
@@ -99,15 +107,20 @@ async function test (){
   // Deleting 3rd product
   await pm.deleteProduct(3)
   // Modifying 1st product title and description. Id wont be modified!
-  await pm.updateProduct(1, {id:1231231, title:'Nuevo Titulo', description:'Nueva Descripcion'})
+  await pm.updateProduct(40, {id:1231231, thumbnail:'www.modifiedurl.com', description:'Nueva Descripcion'})
   products = await pm.getProducts()
-  console.log('3- Product 3 deleted and 1st modified')
+  console.log('3- Product 3 deleted and 4rd modified')
   console.log(products, '\n\n')
   
+  //Looking for product 4
+  const product = await pm.getProductByID(4)
+  console.log('4- Getting product with ID "4"')
+  console.log(product, '\n\n')
+
   // Deleting all products
   pm.deleteAll()
   products = await pm.getProducts()
-  console.log('3- All products have been deleted')
+  console.log('5- All products have been deleted')
   console.log(products, '\n\n')
 }
 
