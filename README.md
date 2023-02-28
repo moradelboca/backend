@@ -4,5 +4,5 @@
 
 Consigna: 
 
-![Consigna 1](https://i.ibb.co/rdPs519/1.jpg)
+![Consigna 1](https://i.ibb.co/tqkL26C/1.jpg)
 ![Consigna 2](https://i.ibb.co/jbRjL2K/2.jpg)
