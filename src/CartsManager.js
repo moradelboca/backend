@@ -32,4 +32,10 @@ export class CartsManager{
       return -1
     }
   }
+  async getCartByID(id){
+    const data = await this.getCarts()
+    const cart = data.find( cart => cart.id == id)
+    if(!cart){console.log('Error: ID not found')}
+    return cart
+  }
 }

@@ -13,3 +13,17 @@ cartsRouter.post('/', async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 })
+
+cartsRouter.get('/:cid', async (req, res) => {
+  try{
+    const cart = await cm.getCartByID(req.params.cid)
+    if(!cart){
+      res.status(404).json({ message: 'ID not found' })
+      return
+    }
+    res.json(cart)
+  }
+  catch(err){
+    res.status(500).json({ message: err.message })
+  }
+})
