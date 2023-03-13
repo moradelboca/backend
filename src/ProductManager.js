@@ -1,22 +1,32 @@
 import fs from 'fs'
+import { randomUUID } from 'crypto'
 
 export class ProductManager{
   constructor(path){
     this.path = path
   }
-  async addProduct(title, description, price, thumbnail, code, stock){
+  async addProduct (title, description, code, price, stock, category, thumbnails, status=true){
     const products = await this.getProducts()
+    const newProduct = {
+      id: randomUUID(),
+      status: status,
+      title: title,
+      description: description,
+      code: code,
+      price: price,
+      stock: stock,
+      category: category,
+      thumbnails: thumbnails
+    }
     // Check if code isnt repeated
-    if (products.some( item => item.code === code )){
-      console.log('Error: Code is repeated!')
+    if (products.some( item => item.code === newProduct.code )){
+      console.log('Code is repeated!')
       return -1
     }
-    // Generating ID
-    let id = !products.length ? 1 : products[products.length-1].id+1
-    const newProducts = JSON.stringify([ ...products, {id, title, description, price, thumbnail, code, stock } ])
+    const newProducts = JSON.stringify([ ...products, newProduct ])
     try{
       await fs.promises.writeFile(this.path, newProducts)
-      return id
+      return newProduct.id
     }
     catch (err){
       console.log(`${err}`)
