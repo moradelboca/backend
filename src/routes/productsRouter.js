@@ -48,8 +48,18 @@ productsRouter.post('/', async (req, res) => {
 productsRouter.put('/:pid', async (req, res) => {
   try{
     const updatedProduct = await pm.updateProduct(req.params.pid, req.body)
-    console.log(updatedProduct)
     res.send({ status: 'success', updatedProduct: updatedProduct })
+  }
+  catch{
+    res.status(500).json({ message: err.message })
+  }
+})
+
+productsRouter.delete('/:pid', async (req, res) => {
+  try{
+    const product = await pm.getProductByID(req.params.pid)
+    const deleted = await pm.deleteProduct(req.params.pid)
+    res.send({ status: 'success', deletedProduct: product })
   }
   catch{
     res.status(500).json({ message: err.message })
