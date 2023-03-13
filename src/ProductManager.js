@@ -5,7 +5,7 @@ export class ProductManager{
   constructor(path){
     this.path = path
   }
-  async addProduct (title, description, code, price, stock, category, thumbnails, status=true){
+  async addProduct (title, description, code, price, stock, category, thumbnails=[], status=true){
     const products = await this.getProducts()
     const newProduct = {
       id: randomUUID(),
@@ -62,11 +62,12 @@ export class ProductManager{
     }
   }
   async updateProduct(id, newPropierties){
+    let newProduct
     const data = await this.getProducts()
     const newData = JSON.stringify(data.map( product =>  {
       // Product that needs to be modified.
       if(product.id === id){
-        const newProduct = { ...product }
+        newProduct = { ...product }
         for (let property in newPropierties){
           if(property in product && property != 'id'){newProduct[property] = newPropierties[property]}
         }
@@ -77,9 +78,11 @@ export class ProductManager{
     // Writing new data to file.
     try{
       await fs.promises.writeFile(this.path, newData)
+      return newProduct
     }
     catch (err){
       console.log(`${err}`)
+      return false
     }
   }
   async deleteAll(){

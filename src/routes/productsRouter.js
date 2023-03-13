@@ -44,3 +44,14 @@ productsRouter.post('/', async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 })
+
+productsRouter.put('/:pid', async (req, res) => {
+  try{
+    const updatedProduct = await pm.updateProduct(req.params.pid, req.body)
+    console.log(updatedProduct)
+    res.send({ status: 'success', updatedProduct: updatedProduct })
+  }
+  catch{
+    res.status(500).json({ message: err.message })
+  }
+})
