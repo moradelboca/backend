@@ -1,11 +1,13 @@
 import { Router } from 'express'
-import { ProductManager } from '../ProductManager.js'
+import { CartsManager } from '../CartsManager.js'
 
 export const cartsRouter = Router()
-const pm = new ProductManager('./static/products.json')
+const cm = new CartsManager('./static/carts.json')
 
-cartsRouter.get('/', async (req, res) => {
+cartsRouter.post('/', async (req, res) => {
   try{
+    const id = await cm.addCart(req.body)
+    res.json({status:'success', cartId: id})
   }
   catch(err){
     res.status(500).json({ message: err.message })
