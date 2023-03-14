@@ -33,9 +33,37 @@ export class CartsManager{
     }
   }
   async getCartByID(id){
-    const data = await this.getCarts()
-    const cart = data.find( cart => cart.id == id)
+    const carts = await this.getCarts()
+    const cart = carts.find( cart => cart.id == id)
     if(!cart){console.log('Error: ID not found')}
     return cart
+  }
+  async updateCart(id, products){
+    const carts = await this.getCarts()
+    const newCart = await this.getCartByID(id)
+    if (!newCart){ return -1 }
+    // Merging 2 lists... Objects re going to be duplicated!
+    newCart.products = [ ...newCart.products, ...products ]
+    // Reducing duplicated objects
+    newCart.products = newCart.products.reduce( (allProducts, currentProduct) => {
+      // Check if product is added
+      const productIndex = allProducts.findIndex( p => p.id === currentProduct.id )
+      if (productIndex != -1) {
+        allProducts[productIndex].quantity += currentProduct.quantity
+        return [ ...allProducts ]
+      }
+      // Product isnt in list
+      return [ ...allProducts, currentProduct ]
+    }, [])
+    // Recreating JSON data with updated cart
+    const newCarts = JSON.stringify(carts.map( cart =>  cart.id == id ? newCart : cart))
+    try{
+      await fs.promises.writeFile(this.path, newCarts)
+      return newCart.id
+    }
+    catch (err){
+      console.log(`${err}`)
+      return -1
+    }
   }
 }

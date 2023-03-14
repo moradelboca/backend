@@ -27,3 +27,14 @@ cartsRouter.get('/:cid', async (req, res) => {
     res.status(500).json({ message: err.message })
   }
 })
+
+cartsRouter.post('/:pid', async (req, res) => {
+  try{
+    const id = await cm.updateCart(req.params.pid, req.body)
+    if(id != -1){ res.json({status:'success', cartId: id}) }
+    else{ res.status(404).json({ message: 'Cart was not found' }) }
+  }
+  catch(err){
+    res.status(500).json({ message: err.message })
+  }
+})
