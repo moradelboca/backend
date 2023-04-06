@@ -1,1 +1,34 @@
-[{"title":"Titulo1","description":"Descripcion 1","code":"AB1","price":10,"stock":20,"category":1,"thumbnails":["fakeurl.com"],"id":"fad21bcd-efc8-4ec6-b4e2-e738e705e401","status":true},{"title":"Titulo1","description":"Descripcion 1","code":"AB2","price":10,"stock":20,"category":1,"thumbnails":["fakeurl.com"],"status":false,"id":"9f80b4a6-39b2-4bf4-afa2-92ba4046ed49"},{"title":"Titulo1","description":"Descripcion 1","code":"AB","price":10,"stock":20,"thumbnails":["fakeurl.com"],"status":false,"id":"7729d73a-0e23-4baf-9627-ee62abafe93e"},{"title":"Titulo1","code":"AaB","price":10,"stock":20,"thumbnails":["fakeurl.com"],"status":false,"id":"88deaddf-3dfd-4bc2-93f1-30f6414e4667"},{"title":"Titulo1","code":"AaaB","price":10,"stock":20,"thumbnails":["fakeurl.com"],"status":false,"id":"5ad40749-89db-42d2-bcb3-6dafc169d3cf"},{"title":"Titulo1","code":"AB3332","price":10,"stock":20,"category":1,"thumbnails":["fakeurl.com"],"status":false,"id":"51ecc08f-dbbf-45b7-87ef-948072cf31ce"},{"title":"Titulo1","code":"ABdffcc3332","price":10,"stock":20,"category":1,"thumbnails":["fakeurl.com"],"status":false,"id":"cfbddff1-5f7b-46f8-8ff9-7dcd1a48acb7"}]
+[
+  {
+    "title": "Titulo1",
+    "description": "Descripcion 1",
+    "code": "AB1",
+    "price": 10,
+    "stock": 20,
+    "category": 1,
+    "thumbnails": ["fakeurl.com"],
+    "id": "fad21bcd-efc8-4ec6-b4e2-e738e705e401",
+    "status": true
+  },
+  {
+    "title": "Titulo2",
+    "description": "Descripcion 1",
+    "code": "AB2",
+    "price": 112310,
+    "stock": 20,
+    "category": 1,
+    "thumbnails": ["fakeurl.com"],
+    "status": false,
+    "id": "9f80b4a6-39b2-4bf4-afa2-92ba4046ed49"
+  },
+  {
+    "title": "Titulo3",
+    "description": "Descripcion 1",
+    "code": "AB",
+    "price": 130,
+    "stock": 20,
+    "thumbnails": ["fakeurl.com"],
+    "status": false,
+    "id": "7729d73a-0e23-4baf-9627-ee62abafe93e"
+  }
+]
