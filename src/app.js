@@ -1,11 +1,12 @@
 import express from 'express'
 import handlebars from 'express-handlebars'
 import { cartsRouter } from './routes/cartsRouter.js'
-import { cartsViewRouter } from './routes/cartsViewRouter.js'
+import { realTimeProductsView } from './routes/realTimeProductsView.js'
 import { productsRouter } from './routes/productsRouter.js'
-import { productsViewRouter } from './routes/productsViewRouter.js'
+import { homeView } from './routes/homeView.js'
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
+import { ProductManager } from './modules/ProductManager.js' 
 
 // Express server
 const app = express()
@@ -21,13 +22,23 @@ app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/public'))
 
 app.use('/api/products', productsRouter)
-app.use('/home', productsViewRouter)
+app.use('/', homeView)
 app.use('/api/carts', cartsRouter)
-app.use('/carts', cartsViewRouter)
+app.use('/realtimeproducts', realTimeProductsView)
 
-socketServer.on('connection', socket => {
-  console.log('Cliente conectado')
-  socket.on('message', data => {
-    console.log(data)
+const pm = new ProductManager('./static/products.json')
+let products = []
+
+socketServer.on('connection', async socket => {
+  // New connections need to receive products.
+  products = await pm.getProducts()
+  socket.emit('productsList', products)
+  console.log('Cliente conectado!')
+  // Message to add a product to the list.
+  socket.on('addProduct', async newProduct => {
+    const { title, description, code, price, stock, category, thumbnails } = newProduct
+    await pm.addProduct(title, description, code, price, stock, category, thumbnails)
+    products = await pm.getProducts()
+    socketServer.emit('productsList', products)
   })
 })
