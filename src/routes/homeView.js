@@ -1,5 +1,5 @@
 import express from 'express'
-import { ProductManager } from '../modules/ProductManager.js'
+import { ProductManager } from '../dao/managers/ProductManager.js'
 
 export const homeView = express.Router()
 const pm = new ProductManager('./static/products.json')

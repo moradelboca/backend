@@ -6,7 +6,8 @@ import { productsRouter } from './routes/productsRouter.js'
 import { homeView } from './routes/homeView.js'
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
-import { ProductManager } from './modules/ProductManager.js' 
+import { ProductManager } from './dao/managers/ProductManager.js' 
+import mongoose from 'mongoose'
 
 // Express server
 const app = express()
@@ -25,6 +26,10 @@ app.use('/api/products', productsRouter)
 app.use('/', homeView)
 app.use('/api/carts', cartsRouter)
 app.use('/realtimeproducts', realTimeProductsView)
+
+// Mongoose
+const uri = 'mongodb+srv://moradelboca:s1OLfOOd5uZW4ovo@ecommerce.z6e0au4.mongodb.net/?retryWrites=true&w=majority'
+await mongoose.connect(uri)
 
 const pm = new ProductManager('./static/products.json')
 let products = []
