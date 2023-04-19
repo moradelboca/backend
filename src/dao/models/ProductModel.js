@@ -15,30 +15,30 @@ const schemaProducts = new mongoose.Schema(
 )
 
 class ProductsModel {
-  #productsDd
+  #productsDb
   constructor() {
-    this.#productsDd = mongoose.model('products', schemaProducts)
+    this.#productsDb = mongoose.model('products', schemaProducts)
   }
   async getProducts() {
-    const products = await this.#productsDd.find().lean()
+    const products = await this.#productsDb.find().lean()
     return products
   }
   async addProduct(product) {
     // Checking if code isnt repeated
-    const repeated = await this.#productsDd.findOne({ code: product.code })
+    const repeated = await this.#productsDb.findOne({ code: product.code })
     if (repeated) {
       console.log('Code is repeated!')
       return -1
     }
-    let saved = await this.#productsDd.create(product)
+    let saved = await this.#productsDb.create(product)
     return saved
   }
   async getProductByID(id) {
-    const product = await this.#productsDd.findOne({ _id: id }).lean()
+    const product = await this.#productsDb.findOne({ _id: id }).lean()
     return product
   }
   async updateProduct(id, newPropierties) {
-    const updatedProduct = await this.#productsDd.updateOne({ _id: id }, newPropierties)
+    const updatedProduct = await this.#productsDb.updateOne({ _id: id }, newPropierties)
     return updatedProduct
   }
   async deleteProduct(id) {
@@ -47,12 +47,12 @@ class ProductsModel {
       console.log('Product wasnt found!')
       return -1
     }
-    await this.#productsDd.deleteOne({ _id: id })
+    await this.#productsDb.deleteOne({ _id: id })
     console.log('Product have been deleted.')
     return 1
 }
 async deleteAll() {
-    await this.#productsDd.deleteMany({})
+    await this.#productsDb.deleteMany({})
     console.log('All products have been deleted')
     return 1
   }

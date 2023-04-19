@@ -1,8 +1,8 @@
 import express from 'express'
 import handlebars from 'express-handlebars'
-import { cartsRouter } from './routes/cartsRouter.js'
+import { cartsRouter } from './routes/cartsAPI.js'
 import { realTimeProductsView } from './routes/realTimeProductsView.js'
-import { productsRouter } from './routes/productsRouter.js'
+import { productsRouter } from './routes/productsAPI.js'
 import { homeView } from './routes/homeView.js'
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
@@ -21,6 +21,9 @@ app.engine('handlebars', handlebars.engine())
 app.set('views', __dirname + '/views')
 app.set('view engine', 'handlebars')
 app.use(express.static(__dirname + '/public'))
+
+app.use(express.json())
+app.use(express.urlencoded({ extended:true }))
 
 app.use('/api/products', productsRouter)
 app.use('/', homeView)
