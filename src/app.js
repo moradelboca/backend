@@ -6,7 +6,7 @@ import { productsRouter } from './routes/productsRouter.js'
 import { homeView } from './routes/homeView.js'
 import { Server } from 'socket.io'
 import __dirname from './utils.js'
-import { ProductManager } from './dao/managers/ProductManager.js' 
+import { productsManager } from './dao/managers/ProductsManager.js' 
 import mongoose from 'mongoose'
 
 // Express server
@@ -31,19 +31,17 @@ app.use('/realtimeproducts', realTimeProductsView)
 const uri = 'mongodb+srv://moradelboca:s1OLfOOd5uZW4ovo@ecommerce.z6e0au4.mongodb.net/?retryWrites=true&w=majority'
 await mongoose.connect(uri)
 
-const pm = new ProductManager('./static/products.json')
 let products = []
-
 socketServer.on('connection', async socket => {
   // New connections need to receive products.
-  products = await pm.getProducts()
+  products = await productsManager.getProducts()
   socket.emit('productsList', products)
   console.log('Cliente conectado!')
   // Message to add a product to the list.
   socket.on('addProduct', async newProduct => {
     const { title, description, code, price, stock, category, thumbnails } = newProduct
-    await pm.addProduct(title, description, code, price, stock, category, thumbnails)
-    products = await pm.getProducts()
+    await productsManager.addProduct(title, description, code, price, stock, category, thumbnails)
+    products = await productsManager.getProducts()
     socketServer.emit('productsList', products)
   })
 })

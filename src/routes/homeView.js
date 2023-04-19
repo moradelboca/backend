@@ -1,10 +1,9 @@
 import express from 'express'
-import { ProductManager } from '../dao/managers/ProductManager.js'
+import { productsManager } from '../dao/managers/ProductsManager.js'
 
 export const homeView = express.Router()
-const pm = new ProductManager('./static/products.json')
 
 homeView.get('/', async (req, res) => {
-  const products = await pm.getProducts()
+  const products = await productsManager.getProducts()
   res.render('home', {products: products, noProducts: products.length == 0})
 })

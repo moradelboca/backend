@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { randomUUID } from 'crypto'
 
-export class CartsManager{
+class CartsManager{
   constructor(path){
     this.path = path
   }
@@ -67,3 +67,5 @@ export class CartsManager{
     }
   }
 }
+
+export const cartsManager = new CartsManager('./static/carts.json')

@@ -1,12 +1,11 @@
 import { Router } from 'express'
-import { CartsManager } from '../dao/managers/CartsManager.js'
+import { cartsManager } from '../dao/managers/CartsManager.js'
 
 export const cartsRouter = Router()
-const cm = new CartsManager('./static/carts.json')
 
 cartsRouter.post('/', async (req, res) => {
   try{
-    const id = await cm.addCart(req.body)
+    const id = await cartsManager.addCart(req.body)
     res.json({status:'success', cartId: id})
   }
   catch(err){
@@ -16,7 +15,7 @@ cartsRouter.post('/', async (req, res) => {
 
 cartsRouter.get('/:cid', async (req, res) => {
   try{
-    const cart = await cm.getCartByID(req.params.cid)
+    const cart = await cartsManager.getCartByID(req.params.cid)
     if(!cart){
       res.status(404).json({ message: 'ID not found' })
       return
@@ -30,7 +29,7 @@ cartsRouter.get('/:cid', async (req, res) => {
 
 cartsRouter.post('/:pid', async (req, res) => {
   try{
-    const id = await cm.updateCart(req.params.pid, req.body)
+    const id = await cartsManager.updateCart(req.params.pid, req.body)
     if(id != -1){ res.json({status:'success', cartId: id}) }
     else{ res.status(404).json({ message: 'Cart was not found' }) }
   }

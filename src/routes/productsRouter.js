@@ -1,12 +1,11 @@
 import { Router } from 'express'
-import { ProductManager } from '../dao/managers/ProductManager.js'
+import { productsManager } from '../dao/managers/ProductsManager.js'
 
 export const productsRouter = Router()
-const pm = new ProductManager('./static/products.json')
 
 productsRouter.get('/', async (req, res) => {
   try{
-    const products = await pm.getProducts()
+    const products = await productsManager.getProducts()
     const { limit } = req.query
     if (!limit) {
       res.send(products)
@@ -21,7 +20,7 @@ productsRouter.get('/', async (req, res) => {
 
 productsRouter.get('/:pid', async (req, res) => {
   try{
-    const product = await pm.getProductByID(req.params.pid)
+    const product = await productsManager.getProductByID(req.params.pid)
     res.send(product || {Error:'Product wasnt found!'})
   }
   catch(err){
@@ -32,7 +31,7 @@ productsRouter.get('/:pid', async (req, res) => {
 productsRouter.post('/', async (req, res) => {
   const { title, description, code, price, stock, category, thumbnails } = req.body
   try{
-    let id = await pm.addProduct( title, description, code, price, stock, category, thumbnails )
+    let id = await productsManager.addProduct( title, description, code, price, stock, category, thumbnails )
     if (id != -1){
       res.json({status:'success', id:id})
     } else{
@@ -47,7 +46,7 @@ productsRouter.post('/', async (req, res) => {
 
 productsRouter.put('/:pid', async (req, res) => {
   try{
-    const updatedProduct = await pm.updateProduct(req.params.pid, req.body)
+    const updatedProduct = await productsManager.updateProduct(req.params.pid, req.body)
     res.send({ status: 'success', updatedProduct: updatedProduct })
   }
   catch{
@@ -57,8 +56,8 @@ productsRouter.put('/:pid', async (req, res) => {
 
 productsRouter.delete('/:pid', async (req, res) => {
   try{
-    const product = await pm.getProductByID(req.params.pid)
-    const deleted = await pm.deleteProduct(req.params.pid)
+    const product = await productsManager.getProductByID(req.params.pid)
+    const deleted = await productsManager.deleteProduct(req.params.pid)
     res.send({ status: 'success', deletedProduct: product })
   }
   catch{
