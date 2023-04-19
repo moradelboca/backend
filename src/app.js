@@ -8,6 +8,7 @@ import { Server } from 'socket.io'
 import __dirname from './utils.js'
 import { productsManager } from './dao/managers/ProductsManager.js' 
 import mongoose from 'mongoose'
+import { cartsModel } from './dao/models/CartsModel.js'
 
 // Express server
 const app = express()

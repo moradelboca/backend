@@ -50,8 +50,8 @@ class ProductsModel {
     await this.#productsDb.deleteOne({ _id: id })
     console.log('Product have been deleted.')
     return 1
-}
-async deleteAll() {
+  }
+  async deleteAll() {
     await this.#productsDb.deleteMany({})
     console.log('All products have been deleted')
     return 1
