@@ -1,4 +1,6 @@
+import { json } from "express"
 import mongoose from "mongoose"
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const schemaProducts = new mongoose.Schema(
   {
@@ -13,6 +15,8 @@ const schemaProducts = new mongoose.Schema(
   },
   { versionKey: false }
 )
+
+schemaProducts.plugin(mongoosePaginate)
 
 class ProductsModel {
   #productsDb
@@ -36,6 +40,12 @@ class ProductsModel {
   async getProductByID(id) {
     const product = await this.#productsDb.findOne({ _id: id }).lean()
     return product
+  }
+  async getPage(query, options) {
+    let page = await this.#productsDb.paginate(query, options)
+    page = JSON.parse(JSON.stringify(page)) // There isnt a lean option!
+    return page
+
   }
   async updateProduct(id, newPropierties) {
     const updatedProduct = await this.#productsDb.updateOne({ _id: id }, newPropierties)

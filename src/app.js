@@ -34,6 +34,7 @@ app.use('/realtimeproducts', realTimeProductsView)
 // Mongoose
 const uri = 'mongodb+srv://moradelboca:s1OLfOOd5uZW4ovo@ecommerce.z6e0au4.mongodb.net/?retryWrites=true&w=majority'
 await mongoose.connect(uri)
+mongoose.connection.useDb('ecommerce')
 
 let products = []
 socketServer.on('connection', async socket => {
