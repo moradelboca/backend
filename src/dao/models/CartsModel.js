@@ -26,11 +26,23 @@ class CartsModel {
     let saved = await this.#cartsDb.create({products:cart})
     return saved
   }
+  async getCartByID(id){
+    const cart = await this.#cartsDb.findOne({ _id: id }).lean()
+    return cart
+  }
+  async updateCart(id, products){
+    
+  }
   async deleteAll() {
     await this.#cartsDb.deleteMany({})
     console.log('All carts have been deleted')
     return 1
   }
 }
+
+schemaCarts.pre(/^find/, function (next) {
+  this.populate('products.product')
+  next()
+})
 
 export const cartsModel = new CartsModel()
