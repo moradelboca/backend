@@ -1,10 +1,10 @@
-{{#if noProducts}}
+{{#if context.showing.length}}
   <div>
     <p>No hay productos!</p>
   </div>
 {{else}}
   <ul>
-    {{#each paginateData.docs}}
+    {{#each context.docs}}
       <li>
         <p>{{this.title}}: ${{this.price}}</p>
       </li>
