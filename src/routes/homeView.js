@@ -13,9 +13,18 @@ homeView.get('/', async (req, res) => {
       sort: { category:sort }
     }
   )
-  console.log(paginateData)
-  paginateData.showing = paginateData.docs.length 
-  res.render('home', {context: paginateData})
+  res.render('home', {
+    docs: paginateData.docs,
+    showingDocs: paginateData.docs.length,
+    totalDocs: paginateData.totalDocs,
+    limit: limit,
+    page: paginateData.page,
+    hasPrevPage: paginateData.hasPrevPage,
+    hasNextPage: paginateData.hasNextPage,
+    prevPage: paginateData.prevPage,
+    nextPage: paginateData.nextPage,
+    totalPages: paginateData.totalPages
+  })
 })
 
 /*
