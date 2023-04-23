@@ -4,15 +4,20 @@ import { productsModel } from '../dao/models/ProductsModel.js'
 export const homeView = express.Router()
    
 homeView.get('/', async (req, res) => {
-  const { limit=10, page=1, sort, category } = req.query
-  const paginateData = await productsModel.getPage(
-    category ? { category } : {},
-    {
-      limit,
-      page,
-      sort: { category:sort }
-    }
-  )
+  const { limit=10, page=1, sort, category, status } = req.query
+    // Defining filter parameters
+    let query = {}
+    if (category) {query.category = category}
+    if (status) {query.status = status}
+    // Searching page
+    const paginateData = await productsModel.getPage(
+      query,
+      {
+        limit,
+        page,
+        sort: { category:sort }
+      }
+    )
   res.render('home', {
     docs: paginateData.docs,
     showingDocs: paginateData.docs.length,

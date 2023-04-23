@@ -45,7 +45,6 @@ class ProductsModel {
     let page = await this.#productsDb.paginate(query, options)
     page = JSON.parse(JSON.stringify(page)) // There isnt a lean option!
     return page
-
   }
   async updateProduct(id, newPropierties) {
     const updatedProduct = await this.#productsDb.updateOne({ _id: id }, newPropierties)

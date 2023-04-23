@@ -4,12 +4,39 @@ import { productsModel } from '../dao/models/ProductsModel.js'
 export const productsRouter = Router()
 
 productsRouter.get('/', async (req, res) => {
-  const products = await productsModel.getProducts()
-  const { limit } = req.query
-  if (!limit) {
-    res.send(products)
-  }else{
-    res.send(products.slice(0, limit))
+  try{
+    const { limit=10, page=1, sort, category, status } = req.query
+    // Defining filter parameters
+    let query = {}
+    if (category) {query.category = category}
+    if (status) {query.status = status}
+    // Searching page
+    const paginateData = await productsModel.getPage(
+      query,
+      {
+        limit,
+        page,
+        sort: { category:sort }
+      }
+    )
+    if (!limit) {
+      res.send({
+        status: 'success',
+        payload: paginateData.docs,
+        totalPages: paginateData.totalPages,
+        hasPrevPage: paginateData.hasPrevPage,
+        hasNextPage: paginateData.hasNextPage,
+        prevPage: paginateData.prevPage,
+        nextPage: paginateData.nextPage,
+        prevLink: paginateData.hasPrevPage ? `/?page=${prevPage + 1}` : null,
+        nextLink: paginateData.hasNextPage ? `/?page=${nextPage + 1}` : null
+      })
+    }else{
+      res.send(products.slice(0, limit))
+    }
+  }
+  catch{
+
   }
 })
 
