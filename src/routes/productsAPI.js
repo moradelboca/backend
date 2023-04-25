@@ -19,24 +19,20 @@ productsRouter.get('/', async (req, res) => {
         sort: { category:sort }
       }
     )
-    if (!limit) {
-      res.send({
-        status: 'success',
-        payload: paginateData.docs,
-        totalPages: paginateData.totalPages,
-        hasPrevPage: paginateData.hasPrevPage,
-        hasNextPage: paginateData.hasNextPage,
-        prevPage: paginateData.prevPage,
-        nextPage: paginateData.nextPage,
-        prevLink: paginateData.hasPrevPage ? `/?page=${prevPage + 1}` : null,
-        nextLink: paginateData.hasNextPage ? `/?page=${nextPage + 1}` : null
-      })
-    }else{
-      res.send(products.slice(0, limit))
-    }
+    res.json({
+      status: 'success',
+      payload: paginateData.docs.slice(0, limit),
+      totalPages: paginateData.totalPages,
+      hasPrevPage: paginateData.hasPrevPage,
+      hasNextPage: paginateData.hasNextPage,
+      prevPage: paginateData.prevPage,
+      nextPage: paginateData.nextPage,
+      prevLink: paginateData.hasPrevPage ? `/?page=${prevPage + 1}` : null,
+      nextLink: paginateData.hasNextPage ? `/?page=${nextPage + 1}` : null
+    })
   }
-  catch{
-
+  catch(e){
+    res.json({status:'error', message:e})
   }
 })
 

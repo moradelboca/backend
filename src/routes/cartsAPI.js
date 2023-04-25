@@ -3,6 +3,17 @@ import { cartsModel } from '../dao/models/CartsModel.js'
 
 export const cartsRouter = Router()
 
+// ONLY FOR DEBBUGGING !!!
+cartsRouter.get('/', async (req, res) => {
+  const carts = await cartsModel.getCarts(req.params.cid)
+  res.json(carts)
+})
+cartsRouter.delete('/', async (req, res) => {
+  const carts = await cartsModel.deleteAll()
+  res.json(carts)
+})
+// ONLY FOR DEBBUGGING !!!
+
 cartsRouter.post('/', async (req, res) => {
   const added = await cartsModel.addCart(req.body)
   res.json({status:'success', cartId: added._id})
@@ -16,10 +27,20 @@ cartsRouter.get('/:cid', async (req, res) => {
   res.json(cart)
 })
 
-cartsRouter.put('/:pid', async (req, res) => {
-  const newCart = await cartsModel.updateCart(req.params.pid, req.body)
+cartsRouter.put('/:cid', async (req, res) => {
+  const newCart = await cartsModel.updateCart(req.params.cid, req.body)
   if(newCart != -1){ res.json({status:'success', updatedCart: newCart}) }
   else{ res.status(404).json({ status:'error', message: 'Cart was not found' }) }
+})
+
+cartsRouter.delete('/:cid/products/:pid', async (req, res) => {
+  try{
+    const newCart = await cartsModel.deleteProduct(req.params.cid, req.params.pid)
+    res.json(newCart)
+  }
+  catch(e){
+    res.json({status:'error', message:e})
+  }
 })
 
 /*

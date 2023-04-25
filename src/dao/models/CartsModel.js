@@ -49,6 +49,13 @@ class CartsModel {
     const updated = await newCart?.save()
     return updated
   }
+  async deleteProduct(cartID, productID){
+    const newCart = await this.#cartsDb.findOne({ _id: cartID })
+    if (!newCart){ throw new Error('Cart wasnt found.') }
+    newCart.products = newCart.products.filter( product => product.product.toString() != productID )
+    const updated = await newCart?.save()
+    return updated
+  }
   async deleteAll() {
     await this.#cartsDb.deleteMany({})
     console.log('All carts have been deleted')
