@@ -1,0 +1,11 @@
+{{#if productExist}}
+    <div id={{product._id}} class="product">
+        <h1>{{product.title}}</h1>
+        <p>{{product.description}}</p>
+        <p>${{product.price}}</p>
+        <p>{{product.stock}} restantes!</p>
+        <button>Agregar al carrito</button>
+    </div>
+{{else}}
+    <h1>Product not found</h1>
+{{/if}}

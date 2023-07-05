@@ -1,0 +1,14 @@
+{{#if cartExist}}
+    <div id={{cart._id}} class="cart">
+        <div class="products">
+          {{#each cart.products}}
+              <div id={{this._id}}>
+                  <h2>{{this.product.title}}</h1>
+                  <p>{{this.quantity}} productos a ${{this.price}} c/u</p>
+              </div>
+          {{/each}}
+        </div>
+    </div>
+{{else}}
+    <h1>Cart not found</h1>
+{{/if}}

@@ -38,8 +38,13 @@ class ProductsModel {
     return saved
   }
   async getProductByID(id) {
-    const product = await this.#productsDb.findOne({ _id: id }).lean()
-    return product
+    try {
+      let product = await this.#productsDb.findById(id).lean()
+      return product
+    }
+    catch (error) {
+      console.log(error)
+    }
   }
   async getPage(query, options) {
     let page = await this.#productsDb.paginate(query, options)

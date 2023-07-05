@@ -15,7 +15,7 @@ cartsRouter.delete('/', async (req, res) => {
 // ONLY FOR DEBBUGGING !!!
 
 cartsRouter.post('/', async (req, res) => {
-  const added = await cartsModel.addCart(req.body)
+  const added = await cartsModel.createCart()
   res.json({status:'success', cartId: added._id})
 })
 
@@ -37,6 +37,27 @@ cartsRouter.delete('/:cid/products/:pid', async (req, res) => {
   try{
     const newCart = await cartsModel.deleteProduct(req.params.cid, req.params.pid)
     res.json(newCart)
+  }
+  catch(e){
+    res.json({status:'error', message:e})
+  }
+})
+
+cartsRouter.delete('/:cid', async (req, res) => {
+  try{
+    const deleted = await cartsModel.deleteCart(req.params.cid)
+    res.json(deleted)
+  }
+  catch(e){
+    res.json({status:'error', message:e})
+  }
+})
+
+cartsRouter.put('/:cid/products/:pid', async (req, res) => {
+  try{
+    const newCart = await cartsModel.updateProduct(req.params.cid, req.params.pid)
+    if(newCart != -1){ res.json({status:'success', updatedCart: newCart}) }
+    else{ res.status(404).json({ status:'error', message: 'Cart was not found' }) }
   }
   catch(e){
     res.json({status:'error', message:e})

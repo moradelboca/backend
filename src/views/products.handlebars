@@ -1,0 +1,22 @@
+{{#if showingDocs.length}}
+  <div>
+    <p>No hay productos!</p>
+  </div>
+{{else}}
+  <div>
+    <p>Se muestran {{showingDocs}} de un total de {{totalDocs}} productos</p>
+    <ul>
+      {{#each docs}}
+        <li>
+          <div id={{this._id}} class="product">
+            <p>{{this.title}}: ${{this.price}}</p> <a href="/products/{{this._id}}">Ver mas</a>
+            <button>Agregar al carrito</button>
+          </div>
+        </li>
+      {{/each}} 
+    </ul>
+  </div>
+{{/if}}
+<p>Página {{page}} de {{totalPages}}</p>
+{{#if hasPrevPage}} <a href="/?page={{prevPage}}" >Anterior</a> {{/if}}
+{{#if hasNextPage}} <a href="/?page={{nextPage}}" >Siguiente</a> {{/if}}

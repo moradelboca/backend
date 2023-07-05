@@ -3,10 +3,10 @@ import mongoose from 'mongoose'
 const schemaCarts = new mongoose.Schema(
   {
     products: [{
-      quantity: { type: Number, required: true }, 
+      _id: false,
+      quantity: { type: Number }, 
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'products'
       }
     }]
@@ -22,8 +22,8 @@ class CartsModel {
     const carts = await this.#cartsDb.find().populate('products.product').lean()
     return carts
   }
-  async addCart(cart) {
-    let saved = await this.#cartsDb.create({products:cart})
+  async createCart() {
+    let saved = await this.#cartsDb.create({ products: []})
     return saved
   }
   async getCartByID(id){
@@ -34,7 +34,7 @@ class CartsModel {
     const newCart = await this.#cartsDb.findOne({ _id: id })
     if (!newCart){ return -1 }
     // Merging 2 lists... Objects re going to be duplicated!
-    newCart.products = [ ...newCart.products, ...products ]
+    newCart.products = newCart.products.concat(products)
     // Reducing duplicated objects
     newCart.products = newCart.products.reduce( (allProducts, currentProduct) => {
       // Check if product is added
@@ -55,6 +55,21 @@ class CartsModel {
     newCart.products = newCart.products.filter( product => product.product.toString() != productID )
     const updated = await newCart?.save()
     return updated
+  }
+  async deleteCart(id){
+    const deleted = await this.#cartsDb.deleteOne({ _id: id })
+    return deleted
+  }
+  async updateProduct(cartID, productID, quantity){
+    const newCart = await this.#cartsDb.findOne({ _id: cartID })
+    if (!newCart){ return -1 }
+    const productIndex = newCart.products.findIndex( p => p.product.toString() === productID )
+    if (productIndex != -1) {
+      newCart.products[productIndex].quantity = quantity
+      const updated = await newCart?.save()
+      return updated
+    }
+    return -1
   }
   async deleteAll() {
     await this.#cartsDb.deleteMany({})

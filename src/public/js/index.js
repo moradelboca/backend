@@ -1,32 +1,48 @@
-const socket = io()
-
-const productsContainer = document.getElementById("products")
-const form = document.getElementById("productInput")
-
-socket.on('productsList', products => {
-  // Mapping all products in DOM's ul
-  productsContainer.innerHTML =  products.reduce( (pList, p) =>{
-    return( 
-      pList + 
-      `
-      <li>
-          <p>${p.title}: $${p.price}</p>
-      </li>
-      `
-    )
-  }, '')
-})
-
-form.addEventListener('submit', e => {
-  e.preventDefault()
-  const product = {
-    title: document.getElementById('title').value,
-    description: document.getElementById('description').value,
-    code: document.getElementById('code').value,
-    price: document.getElementById('price').value,
-    stock: document.getElementById('stock').value,
-    category: document.getElementById('category').value,
-    thumbnails: document.getElementById('thumbnails').value
+function getCartID(){
+  const cartID = localStorage.getItem('cartID')
+  if (cartID) return cartID
+  else { 
+    fetch('http://localhost:8080/api/carts', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    })
+    .then(res => res.json())
+    .then(data => {
+      localStorage.setItem('cartID', data.cartId)
+      return data.cartId
+    })
   }
-  socket.emit('addProduct', product)
+}
+
+function addToCart(product, cartID, quantity=1){
+  fetch(`http://localhost:8080/api/carts/${cartID}`, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ product:product, quantity:quantity })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status == 'success') { alert('Producto agregado!') }
+    else { alert('Error al agregar producto') }
+  })
+}
+
+const cartID = getCartID()
+
+const products = document.querySelectorAll('.product')
+products.forEach( product => {
+  const productID = product.getAttribute('id')
+  product.querySelector("button").addEventListener('click', () => {
+    addToCart(productID, cartID)
+  })
 })
+
+const carritoLink = document.getElementById('carrito-link')
+carritoLink.href = `/carts/${cartID}`
