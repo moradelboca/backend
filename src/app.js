@@ -11,6 +11,11 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import { COOKIEPARSER_SECRET, MONGO_URI, PORT, SESSION_SECRET } from './config/config.js'
 import MongoStore from 'connect-mongo'
+import { sessionsRouter } from './routes/api/sessionsAPI.js'
+import { usersRouter } from './routes/api/usersAPI.js'
+import { loginView } from './routes/views/loginView.js'
+import { registerView } from './routes/views/registerView.js'
+import { onlyAuth } from './middlewares/auth.js'
 
 // Express server
 const app = express()
@@ -25,13 +30,6 @@ app.use(express.static(__dirname + '/public'))
 app.use(express.json())
 app.use(express.urlencoded({ extended:true }))
 
-//Handlebars view
-app.use('/', homeView)
-app.use('/products', productsView)
-app.use('/carts', cartView)
-// API views
-app.use('/api/products', productsRouter)
-app.use('/api/carts', cartsRouter)
 // Cookie Parser
 app.use(cookieParser(COOKIEPARSER_SECRET))
 // Session
@@ -45,6 +43,19 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }))
+
+//Handlebars view
+app.use('/', homeView)
+app.use('/products', onlyAuth, productsView)
+app.use('/carts', onlyAuth, cartView)
+app.use('/login', loginView)
+app.use('/register', registerView)
+// API views
+app.use('/api/products', productsRouter)
+app.use('/api/carts', cartsRouter)
+app.use('/api/sessions', sessionsRouter)
+app.use('/api/users', usersRouter)
+
 
 // Mongoose
 await mongoose.connect(MONGO_URI)

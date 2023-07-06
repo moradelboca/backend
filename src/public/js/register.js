@@ -26,16 +26,17 @@ if (formRegister instanceof HTMLFormElement) {
         password: input_password.value,
       }
 
-      const usuarioCreado = await fetch('/api/usuarios', {
+      const { status } = await fetch('/api/users', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(datosUsuario)
-      }).then(res => res.json())
-
-      console.log(usuarioCreado)
+      })
+      if (status === 201) {
+        window.location.href = '/login'
+      }
     }
   })
 }

@@ -17,7 +17,7 @@ if (formLogin instanceof HTMLFormElement) {
         password: input_password.value,
       }
 
-      const { status } = await fetch('/api/sesiones', {
+      const { status } = await fetch('/api/sessions', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -27,10 +27,15 @@ if (formLogin instanceof HTMLFormElement) {
       })
 
       if (status === 201) {
-        window.location.href = '/productos'
+        window.location.href = '/products'
       } else {
         console.log('[login] estado inesperado: ' + status)
       }
     }
   })
 }
+
+
+document.getElementById('register').addEventListener('click', () => {
+  window.location.href = '/register'
+})

@@ -1,25 +1,23 @@
 import { Router } from 'express'
-import { productsModel } from '../models/models/ProductsModel.js'
+import { usersModel } from '../../models/UsersModel.js'
 
 export const sessionsRouter = Router()
 
-apiRouter.post('/usuarios', postUsuarios)
-
-sessionsRouter.post('/sesiones', async (req, res, next) => {
-  const usuarioEncontrado = await usuarioModel.findOne({ email: req.body.email }).lean()
-  if (!usuarioEncontrado) return res.sendStatus(401)
-  if (usuarioEncontrado.password !== req.body.password) {
+sessionsRouter.post('/', async (req, res, next) => {
+  const user = await usersModel.getByEmail(req.body.email)
+  if (!user) return res.sendStatus(401)
+  if (user.password !== req.body.password) {
     return res.sendStatus(401)
   }
   req.session.user = {
-    name: usuarioEncontrado.first_name + ' ' + usuarioEncontrado.last_name,
-    email: usuarioEncontrado.email,
-    age: usuarioEncontrado.age,
+    name: user.first_name + ' ' + user.last_name,
+    email: user.email,
+    age: user.age,
   }
   res.status(201).json(req.session.user)
 })
 
-sessionsRouter.delete('/sesiones', (req, res, next) => {
+sessionsRouter.delete('/', (req, res, next) => {
   req.session.destroy(err => {
     res.sendStatus(200)
   })

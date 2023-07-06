@@ -17,6 +17,15 @@ class UsersModel {
     let newUser = await this.#usersDb.create(userData)
     return newUser
   }
+  async getByEmail(email) {
+    try{
+      let user = await this.#usersDb.findOne({ email }).lean()
+      return user
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 }
 
 export const usersModel = new UsersModel()
