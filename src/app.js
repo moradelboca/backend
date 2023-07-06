@@ -1,16 +1,19 @@
 import express from 'express'
 import handlebars from 'express-handlebars'
-import { cartsRouter } from './routes/cartsAPI.js'
-import { productsRouter } from './routes/productsAPI.js'
-import { homeView } from './routes/homeView.js'
+import { cartsRouter } from './routes/api/cartsAPI.js'
+import { productsRouter } from './routes/api/productsAPI.js'
+import { homeView } from './routes/views/homeView.js'
 import __dirname from './utils.js'
 import mongoose from 'mongoose'
-import { productsView } from './routes/productsView.js'
-import { cartView } from './routes/cartView.js'
+import { productsView } from './routes/views/productsView.js'
+import { cartView } from './routes/views/cartView.js'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
+import { COOKIEPARSER_SECRET, MONGO_URI, PORT, SESSION_SECRET } from './config/config.js'
+import MongoStore from 'connect-mongo'
 
 // Express server
 const app = express()
-const PORT = process.env.PORT || 8080
 const httpServer = app.listen(PORT, () => console.log(`Server listening on http://localhost:${PORT}`))
 
 // Handlebars config
@@ -29,8 +32,20 @@ app.use('/carts', cartView)
 // API views
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
+// Cookie Parser
+app.use(cookieParser(COOKIEPARSER_SECRET))
+// Session
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl: MONGO_URI,
+    mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+    ttl: 10 * 60 // 10 minutes
+  }),
+  secret: SESSION_SECRET,
+  resave: true,
+  saveUninitialized: true
+}))
 
 // Mongoose
-const uri = 'mongodb+srv://moradelboca:s1OLfOOd5uZW4ovo@ecommerce.z6e0au4.mongodb.net/?retryWrites=true&w=majority'
-await mongoose.connect(uri)
+await mongoose.connect(MONGO_URI)
 mongoose.connection.useDb('ecommerce')
