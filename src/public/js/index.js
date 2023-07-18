@@ -46,3 +46,17 @@ products.forEach( product => {
 
 const carritoLink = document.getElementById('carrito-link')
 carritoLink.href = `/carts/${cartID}`
+
+const logoutButton = document.getElementById('logout-button')
+logoutButton.addEventListener('click', async () => {
+  const { status } = await fetch('/api/sessions', {
+    method: 'DELETE',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+  if (status === 200) {
+    window.location.href = '/'
+  }
+})

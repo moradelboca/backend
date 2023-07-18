@@ -37,7 +37,7 @@ app.use(session({
   store: MongoStore.create({
     mongoUrl: MONGO_URI,
     mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-    ttl: 10 * 60 // 10 minutes
+    ttl: 10 // 10 minutes
   }),
   secret: SESSION_SECRET,
   resave: true,

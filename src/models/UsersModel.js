@@ -6,6 +6,7 @@ const usuarioSchema = new mongoose.Schema({
   first_name: { type: String, required: true },
   last_name: { type: String, required: true },
   age: { type: Number, required: true },
+  role: { type: String, enum: ['user', 'admin'], default: 'user'}
 }, { versionKey: false })
 
 class UsersModel {
@@ -19,7 +20,18 @@ class UsersModel {
   }
   async getByEmail(email) {
     try{
-      let user = await this.#usersDb.findOne({ email }).lean()
+      let user = await this.#usersDb.findOne({ email })
+      return user
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+  async promoteToAdmin(email) {
+    try{
+      let user = await this.getByEmail(email)
+      user.role = 'admin'
+      await user.save()
       return user
     }
     catch(error){
