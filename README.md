@@ -18,3 +18,4 @@ Por ejemplo, para clonar el desafio 4:
 - 4 - [Primera pre entrega](https://github.com/moradelboca/backend/tree/desafio4)
 - 5 - [Motores de plantillas + Websocket](https://github.com/moradelboca/backend/tree/desafio5)
 - 6 - [Primera Practica Integradora + Segunda entrega del PF](https://github.com/moradelboca/backend/tree/desafio6y7)
+- 7 - [Implementacion del login](https://github.com/moradelboca/backend/tree/desafio8)
