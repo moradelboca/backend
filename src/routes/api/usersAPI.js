@@ -28,8 +28,12 @@ usersRouter.post('/register', async (req, res) => {
 })
 
 usersRouter.post('/login', passport.authenticate('local'), async (req, res) => {
-  res.status(201).json({ user: req.user })
+  res.status(201).json({ status: 'success' })
 })
+
+usersRouter.get('/github', passport.authenticate('github'))
+
+usersRouter.get('/githubcallback', passport.authenticate('github'), async (req, res) => { res.redirect('/') })
 
 usersRouter.post('/logout', async (req, res) => {
   req.logout()
