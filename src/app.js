@@ -16,6 +16,8 @@ import { usersRouter } from './routes/api/usersAPI.js'
 import { loginView } from './routes/views/loginView.js'
 import { registerView } from './routes/views/registerView.js'
 import { onlyAuth } from './middlewares/auth.js'
+import { passportInitialize, passportSession } from './middlewares/passport.js'
+import { errorHandling } from './middlewares/errorHandling.js'
 
 // Express server
 const app = express()
@@ -44,6 +46,8 @@ app.use(session({
   saveUninitialized: true
 }))
 
+// Passport
+app.use(passportInitialize, passportSession)
 //Handlebars view
 app.use('/', homeView)
 app.use('/products', onlyAuth, productsView)
@@ -55,6 +59,8 @@ app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/api/sessions', sessionsRouter)
 app.use('/api/users', usersRouter)
+//Error handling
+app.use(errorHandling)
 
 
 // Mongoose
