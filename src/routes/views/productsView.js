@@ -1,5 +1,5 @@
 import express from 'express'
-import { productsModel } from '../../models/ProductsModel.js'
+import { productsDao } from '../../daos/products.dao.mongoose.js'
 
 export const productsView = express.Router()
 
@@ -10,7 +10,7 @@ productsView.get('/', async (req, res) => {
   if (category) {query.category = category}
   if (status) {query.status = status}
   // Searching page
-  const paginateData = await productsModel.getPage(
+  const paginateData = await productsDao.getPage(
     query,
     {
       limit,
@@ -35,7 +35,7 @@ productsView.get('/', async (req, res) => {
 
 productsView.get('/:id', async (req, res) => {
   const { id } = req.params
-  const product = await productsModel.getProductByID(id)
+  const product = await productsDao.getProductByID(id)
   res.render('product', {
     title: 'Producto',
     product: product,

@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+import mongoose from '../database/mongoose.js'
 
-const schemaCarts = new mongoose.Schema(
+const cartsSchema = new mongoose.Schema(
   {
     products: [{
       _id: false,
@@ -13,10 +13,10 @@ const schemaCarts = new mongoose.Schema(
   }, { versionKey: false }
 )
 
-class CartsModel {
+class CartsDaoMongoose {
   #cartsDb
   constructor() {
-    this.#cartsDb = mongoose.model('carts', schemaCarts)
+    this.#cartsDb = mongoose.model('carts', cartsSchema)
   }
   async getCarts (){
     const carts = await this.#cartsDb.find().populate('products.product').lean()
@@ -78,4 +78,4 @@ class CartsModel {
   }
 }
 
-export const cartsModel = new CartsModel()
+export const cartsDao = new CartsDaoMongoose()

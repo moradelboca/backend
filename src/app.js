@@ -3,15 +3,13 @@ import handlebars from 'express-handlebars'
 import { cartsRouter } from './routes/api/cartsAPI.js'
 import { productsRouter } from './routes/api/productsAPI.js'
 import { homeView } from './routes/views/homeView.js'
-import __dirname from './utils.js'
-import mongoose from 'mongoose'
 import { productsView } from './routes/views/productsView.js'
 import { cartView } from './routes/views/cartView.js'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
-import { COOKIEPARSER_SECRET, MONGO_URI, PORT, SESSION_SECRET } from './config/config.js'
+import { COOKIEPARSER_SECRET, SESSION_SECRET } from './config/server.config.js'
 import MongoStore from 'connect-mongo'
-import { sessionsRouter } from './routes/api/sessionsAPI.js'
+import { MONGO_URI } from './config/mongodb.config.js'
 import { usersRouter } from './routes/api/usersAPI.js'
 import { loginView } from './routes/views/loginView.js'
 import { registerView } from './routes/views/registerView.js'
@@ -20,20 +18,20 @@ import { passportInitialize, passportSession } from './middlewares/passport.js'
 import { errorHandling } from './middlewares/errorHandling.js'
 
 // Express server
-const app = express()
-const httpServer = app.listen(PORT, () => console.log(`Server listening on http://localhost:${PORT}`))
+export const app = express()
 
 // Handlebars config
 app.engine('handlebars', handlebars.engine())
-app.set('views', __dirname + '/views')
+app.set('views', './views')
 app.set('view engine', 'handlebars')
-app.use(express.static(__dirname + '/public'))
+app.use(express.static('./public'))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended:true }))
 
 // Cookie Parser
 app.use(cookieParser(COOKIEPARSER_SECRET))
+
 // Session
 app.use(session({
   store: MongoStore.create({
@@ -57,12 +55,6 @@ app.use('/register', registerView)
 // API views
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
-app.use('/api/sessions', sessionsRouter)
 app.use('/api/users', usersRouter)
 //Error handling
 app.use(errorHandling)
-
-
-// Mongoose
-await mongoose.connect(MONGO_URI)
-mongoose.connection.useDb('ecommerce')

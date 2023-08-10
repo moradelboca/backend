@@ -1,41 +1,20 @@
 import { Router } from 'express'
 import passport from 'passport'
-import { hash } from '../../utils.js'
-import { usersModel } from '../../models/UsersModel.js'
+import { 
+  handleGithubCallback,
+  handleLogin,
+  handleLogout,
+  handleRegister
+} from '../../controllers/users.controller.js'
 
 export const usersRouter = Router()
 
-usersRouter.post('/register', async (req, res) => {
-  const { email, password, first_name, last_name, age } = req.body
-  const user = {
-    email, 
-    password: hash(password),
-    first_name,
-    last_name, 
-    age 
-  }
-  await usersModel.createUser(user)
-  
-  // Logging in user after registering.
-  req.login(user, error => {
-    if (error) {
-      next(new Error('falló el login!'))
-    } else {
-      res.status(201).json(req.user)
-    }
-  })
-  console.log(req.isAuthenticated())
-})
+usersRouter.post('/register', handleRegister)
 
-usersRouter.post('/login', passport.authenticate('local'), async (req, res) => {
-  res.status(201).json({ status: 'success' })
-})
+usersRouter.post('/login', passport.authenticate('local'), handleLogin)
 
 usersRouter.get('/github', passport.authenticate('github'))
 
-usersRouter.get('/githubcallback', passport.authenticate('github'), async (req, res) => { res.redirect('/') })
+usersRouter.get('/githubcallback', passport.authenticate('github'), handleGithubCallback)
 
-usersRouter.post('/logout', async (req, res) => {
-  req.logout()
-  res.status(200).json({ msg: 'Logged out' })
-})
+usersRouter.post('/logout', handleLogout)

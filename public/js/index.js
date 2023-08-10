@@ -49,8 +49,8 @@ carritoLink.href = `/carts/${cartID}`
 
 const logoutButton = document.getElementById('logout-button')
 logoutButton.addEventListener('click', async () => {
-  const { status } = await fetch('/api/sessions', {
-    method: 'DELETE',
+  const { status } = await fetch('/api/users/logout', {
+    method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
