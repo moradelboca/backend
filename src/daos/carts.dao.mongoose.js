@@ -1,4 +1,5 @@
 import mongoose from '../database/mongoose.js'
+import { NotFoundError } from '../models/Errors.js'
 
 const cartsSchema = new mongoose.Schema(
   {
@@ -19,62 +20,91 @@ class CartsDaoMongoose {
     this.#cartsDb = mongoose.model('carts', cartsSchema)
   }
   async getCarts (){
-    const carts = await this.#cartsDb.find().populate('products.product').lean()
-    return carts
+    try{
+      const carts = await this.#cartsDb.find().populate('products.product').lean()
+      return carts
+    }
+    catch(error){
+      throw error
+    }
   }
-  async createCart() {
-    let saved = await this.#cartsDb.create({ products: []})
-    return saved
+  async createEmptyCart() {
+    try{
+      let saved = await this.#cartsDb.create({ products: []})
+      return saved
+    }
+    catch(error){
+      throw error
+    }
   }
   async getCartByID(id){
-    const cart = await this.#cartsDb.findOne({ _id: id }).populate('products.product').lean()
-    return cart
+    try{
+      const cart = await this.#cartsDb.findOne({ _id: id }).populate('products.product').lean()
+      if(!cart) throw new NotFoundError('Cart not found')
+      return cart
+    }
+    catch(error){
+      throw error
+    }
   }
   async updateCart(id, products){
-    const newCart = await this.#cartsDb.findOne({ _id: id })
-    if (!newCart){ return -1 }
-    // Merging 2 lists... Objects re going to be duplicated!
-    newCart.products = newCart.products.concat(products)
-    // Reducing duplicated objects
-    newCart.products = newCart.products.reduce( (allProducts, currentProduct) => {
-      // Check if product is added
-      const productIndex = allProducts.findIndex( p => p.product.toString() === currentProduct.product.toString() )
-      if (productIndex != -1) {
-        allProducts[productIndex].quantity += currentProduct.quantity
-        return [ ...allProducts ]
-      }
-      // Product isnt in list
-      return [ ...allProducts, currentProduct ]
-    }, [])
-    const updated = await newCart?.save()
-    return updated
-  }
-  async deleteProduct(cartID, productID){
-    const newCart = await this.#cartsDb.findOne({ _id: cartID })
-    if (!newCart){ throw new Error('Cart wasnt found.') }
-    newCart.products = newCart.products.filter( product => product.product.toString() != productID )
-    const updated = await newCart?.save()
-    return updated
-  }
-  async deleteCart(id){
-    const deleted = await this.#cartsDb.deleteOne({ _id: id })
-    return deleted
-  }
-  async updateProduct(cartID, productID, quantity){
-    const newCart = await this.#cartsDb.findOne({ _id: cartID })
-    if (!newCart){ return -1 }
-    const productIndex = newCart.products.findIndex( p => p.product.toString() === productID )
-    if (productIndex != -1) {
-      newCart.products[productIndex].quantity = quantity
+    try{
+      const newCart = await this.#cartsDb.findOne({ _id: id })
+      if (!newCart) throw new NotFoundError('Cart wasnt found.')
+      products.forEach( currentProduct => {
+        const productIndex = newCart.products.findIndex( p => p.product.toString() === currentProduct.product.toString() )
+        if (productIndex != -1) {
+          newCart.products[productIndex].quantity += currentProduct.quantity
+        } else {
+          newCart.products.push(currentProduct)
+        }
+      })
       const updated = await newCart?.save()
       return updated
     }
-    return -1
+    catch(error){
+      throw error
+    }
   }
-  async deleteAll() {
-    await this.#cartsDb.deleteMany({})
-    console.log('All carts have been deleted')
-    return 1
+  async deleteProduct(cartID, productID){
+    try{
+      const newCart = await this.#cartsDb.findOne({ _id: cartID })
+      if (!newCart){ throw new NotFoundError('Cart wasnt found.') }
+      let productWasFound = false
+      newCart.products = newCart.products.filter( product => { 
+        if (product.product.toString() === productID) {
+          productWasFound = true
+          return false
+        }
+        return true
+      }) 
+      if (!productWasFound) throw new NotFoundError('Product wasnt found.')
+      const updated = await newCart?.save()
+      return updated
+    }
+    catch(error){
+      throw error
+    }
+  }
+  async deleteCart(id){
+    try{
+      let cart = await this.#cartsDb.findById(id)
+      if (!cart) throw new NotFoundError('Cart not found')
+      cart.deleteOne()
+      return cart
+    }
+    catch(error){
+      throw error
+    }
+  }
+  async updateProduct(cartID, productID, quantity){
+    const newCart = await this.#cartsDb.findOne({ _id: cartID })
+    if (!newCart) throw new NotFoundError('Cart wasnt found.')
+    const productIndex = newCart.products.findIndex( p => p.product.toString() === productID )
+    if (productIndex === -1) throw new NotFoundError('Product wasnt found.')
+    newCart.products[productIndex].quantity = quantity
+    const updated = await newCart?.save()
+    return updated
   }
 }
 

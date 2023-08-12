@@ -6,7 +6,7 @@ import {
   handleGetOne,
   handleUpdate,
   handleUpdateOne
-} from '../../controllers/carts.controller.js'
+} from '../../controllers/api/carts.controller.js'
 
 export const cartsRouter = Router()
 
@@ -20,4 +20,4 @@ cartsRouter.delete('/:cid/products/:pid', handleDeleteProduct)
 
 cartsRouter.delete('/:cid', handleDelete)
 
-cartsRouter.put('/:cid/products/:pid', handleUpdateOne  )
+cartsRouter.put('/:cid/products/:pid', handleUpdateOne)

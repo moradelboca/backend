@@ -22,7 +22,7 @@ if (formRegister instanceof HTMLFormElement) {
         first_name: input_first_name.value,
         last_name: input_last_name.value,
         email: input_email.value,
-        age: input_age.value,
+        age: parseInt(input_age.value),
         password: input_password.value,
       }
 
@@ -33,7 +33,7 @@ if (formRegister instanceof HTMLFormElement) {
         },
         body: JSON.stringify(datosUsuario)
       })
-      if (status === 201) {
+      if (status === 200) {
         window.location.href = '/'
       }
     }

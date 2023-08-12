@@ -5,7 +5,7 @@ import {
   handleGetAll, 
   handleGetOne, 
   handleUpdateOne
-} from '../../controllers/products.controller.js'
+} from '../../controllers/api/products.controller.js'
 
 export const productsRouter = Router()
 

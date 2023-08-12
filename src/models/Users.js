@@ -1,7 +1,11 @@
+import { hash } from '../utils.js'
+
 export class User {
-  constructor(email, first_name, last_name, password, age, role) {
+  constructor(email, first_name, last_name, password, age, role='user', cartID) {
     
-    arguments.forEach(arg => { if (!arg) throw new Error('All data is required.') })
+    if (!email || !first_name || !last_name || !password || !age || !cartID) {
+      throw new Error('All data is required.')
+    }
     if (age > 120 || age < 0) throw new Error('Age must be between 0 and 120.')
     if (role != 'user' && role != 'admin') throw new Error('Role must be either user or admin.')
     if (email.indexOf('@') == -1) throw new Error('Email must contain @.')
@@ -13,8 +17,9 @@ export class User {
     this.email = email
     this.first_name = first_name
     this.last_name = last_name
-    this.password = password
+    this.password = hash(password)
     this.age = age
     this.role = role
+    this.cart = cartID
   }
 }

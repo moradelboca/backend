@@ -1,4 +1,5 @@
-import { productsDao } from "../daos/products.dao.mongoose.js"
+import { productsDao } from "../../daos/products.dao.mongoose.js"
+import { Product } from "../../models/Products.js"
 
 export async function handleGetAll(req, res, next) {
   try{
@@ -16,8 +17,7 @@ export async function handleGetAll(req, res, next) {
         sort: { category:sort }
       }
     )
-    res.json({
-      status: 'success',
+    res.status(200).json({
       payload: paginateData.docs.slice(0, limit),
       totalPages: paginateData.totalPages,
       hasPrevPage: paginateData.hasPrevPage,
@@ -28,36 +28,49 @@ export async function handleGetAll(req, res, next) {
       nextLink: paginateData.hasNextPage ? `/?page=${nextPage + 1}` : null
     })
   }
-  catch(e){
-    res.json({status:'error', message:e})
+  catch(error){
+    next(error) 
   }
 }
 
 export async function handleGetOne(req, res, next) {
-  const product = await productsDao.getProductByID(req.params.pid)
-  res.send(product || {Error:'Product wasnt found!'})
+  try{
+    const product = await productsDao.getProductByID(req.params.pid)
+    res.status(200).send({product: product})
+  }
+  catch(error){
+    next(error)
+  }
 }
 
 export async function handleAddOne(req, res, next) {
-  let id = await productsDao.addProduct( req.body )
-  if (id != -1){
-    res.json({status:'success', product:id})
-  } else{
-    res.json({status:'error'})
+  const { title, description, code, price, stock, category, thumbnails=[], status=true } = req.body
+  try{
+    const newProduct = new Product(title, description, code, price, stock, category, thumbnails, status)
+    let id = await productsDao.addProduct( newProduct )
+    res.status(200).json({productId:id})
+  }
+  catch(error){
+    next(error)
   }
 }
 
 export async function handleUpdateOne(req, res, next) {
-  const updatedProduct = await productsDao.updateProduct(req.params.pid, req.body)
-  res.send({ status: 'success', updatedProduct: updatedProduct })
+  try{
+    const updatedProduct = await productsDao.updateProduct(req.params.pid, req.body)
+    res.send({ updatedProduct: updatedProduct })
+  }
+  catch(error){
+    next(error)
+  }
 }
 
 export async function handleDeleteOne(req, res, next) {
-const product = await productsDao.getProductByID(req.params.pid)
-  if (product){
+  try{
     const deleted = await productsDao.deleteProduct(req.params.pid)
-    res.send({ status: 'success', deletedProduct: product })
-    return
+    res.send({ deletedProduct: deleted })
   }
-  res.send({ status: 'error' })
+  catch(error){
+    next(error)
+  }
 }
