@@ -44,7 +44,6 @@ export async function handleProductsView(req, res, next) {
       nextPage: 0,
       totalPages: 0
     })
-    error.viewError = true
     next(error)
   }
 }

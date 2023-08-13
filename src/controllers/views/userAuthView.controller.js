@@ -14,7 +14,6 @@ export async function handleLoginView(req, res, next) {
   }
   catch(error){
     res.render('login', { title: 'Login - Failed' })
-    error.viewError = true
     next(error)
   }
 }

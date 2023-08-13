@@ -15,7 +15,6 @@ export async function handleCartView(req, res, next) {
       cart: [],
       cartExist: false
     })
-    error.viewError = true
     next(error)
   }
 }

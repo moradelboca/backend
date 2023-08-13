@@ -12,7 +12,6 @@ import MongoStore from 'connect-mongo'
 import { MONGO_URI } from './config/mongodb.config.js'
 import { usersRouter } from './routes/api/users.route.js'
 import { userAuthView } from './routes/views/userAuthView.route.js'
-import { onlyAuth } from './middlewares/auth.js'
 import { passportInitialize, passportSession } from './middlewares/passport.js'
 import { errorHandling } from './middlewares/errorHandling.js'
 
@@ -47,8 +46,8 @@ app.use(session({
 app.use(passportInitialize, passportSession)
 //Handlebars view
 app.use('/', homeView)
-app.use('/products', onlyAuth, productsView)
-app.use('/carts', onlyAuth, cartView)
+app.use('/products', productsView)
+app.use('/carts', cartView)
 app.use('/auth', userAuthView)
 // API views
 app.use('/api/products', productsRouter)
