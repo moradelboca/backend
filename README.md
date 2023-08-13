@@ -4,4 +4,5 @@
 
 ## Consigna: 
 
-![Consigna 1](https://i.ibb.co/jfyghvz/Clase-21-Estrategia-de-autenticaci-n-por-terceros-JWT.png)
+![Consigna 1](https://i.ibb.co/XDd5dNq/Clase-24-Segunda-Pr-ctica-Integradora.jpg)
+![Consigna 2](https://i.ibb.co/3BrPYXR/Clase-27-Arquitectura-del-servidor-Dise-o.jpg)
