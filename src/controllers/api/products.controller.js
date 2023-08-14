@@ -1,5 +1,4 @@
-import { productsDao } from "../../daos/products.dao.mongoose.js"
-import { Product } from "../../models/Products.js"
+import { productsService } from "../../services/products.service.js"
 
 export async function handleGetAll(req, res, next) {
   try{
@@ -9,7 +8,7 @@ export async function handleGetAll(req, res, next) {
     if (category) {query.category = category}
     if (status) {query.status = status}
     // Searching page
-    const paginateData = await productsDao.getPage(
+    const paginateData = await productsService.getProducts(
       query,
       {
         limit,
@@ -24,8 +23,8 @@ export async function handleGetAll(req, res, next) {
       hasNextPage: paginateData.hasNextPage,
       prevPage: paginateData.prevPage,
       nextPage: paginateData.nextPage,
-      prevLink: paginateData.hasPrevPage ? `/?page=${prevPage + 1}` : null,
-      nextLink: paginateData.hasNextPage ? `/?page=${nextPage + 1}` : null
+      prevLink: paginateData.hasPrevPage ? `/?page=${prevPage}` : null,
+      nextLink: paginateData.hasNextPage ? `/?page=${nextPage}` : null
     })
   }
   catch(error){
@@ -35,7 +34,7 @@ export async function handleGetAll(req, res, next) {
 
 export async function handleGetOne(req, res, next) {
   try{
-    const product = await productsDao.getProductByID(req.params.pid)
+    const product = await productsService.getProductByID(req.params.pid)
     res.status(200).send({product: product})
   }
   catch(error){
@@ -44,10 +43,8 @@ export async function handleGetOne(req, res, next) {
 }
 
 export async function handleAddOne(req, res, next) {
-  const { title, description, code, price, stock, category, thumbnails=[], status=true } = req.body
   try{
-    const newProduct = new Product(title, description, code, price, stock, category, thumbnails, status)
-    let id = await productsDao.addProduct( newProduct )
+    let id = await productsService.createProduct( req.body )
     res.status(200).json({productId:id})
   }
   catch(error){
@@ -57,7 +54,7 @@ export async function handleAddOne(req, res, next) {
 
 export async function handleUpdateOne(req, res, next) {
   try{
-    const updatedProduct = await productsDao.updateProduct(req.params.pid, req.body)
+    const updatedProduct = await productsService.updateProduct(req.params.pid, req.body)
     res.send({ updatedProduct: updatedProduct })
   }
   catch(error){
@@ -67,7 +64,7 @@ export async function handleUpdateOne(req, res, next) {
 
 export async function handleDeleteOne(req, res, next) {
   try{
-    const deleted = await productsDao.deleteProduct(req.params.pid)
+    const deleted = await productsService.deleteProduct(req.params.pid)
     res.send({ deletedProduct: deleted })
   }
   catch(error){

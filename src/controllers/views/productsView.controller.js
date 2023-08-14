@@ -1,4 +1,4 @@
-import { productsDao } from '../../daos/products.dao.mongoose.js'
+import { productsService } from "../../services/products.service.js"
 
 export async function handleProductsView(req, res, next) {
   try{
@@ -8,7 +8,7 @@ export async function handleProductsView(req, res, next) {
     if (category) {query.category = category}
     if (status) {query.status = status}
     // Searching page
-    const paginateData = await productsDao.getPage(
+    const paginateData = await productsService.getProducts(
       query,
       {
         limit,
@@ -51,7 +51,7 @@ export async function handleProductsView(req, res, next) {
 export async function handleProductView(req, res, next) {
   try{
     const { id } = req.params
-    const product = await productsDao.getProductByID(id)
+    const product = await productsService.getProductByID(id)
     res.render('product', {
       title: 'Producto',
       product: product,

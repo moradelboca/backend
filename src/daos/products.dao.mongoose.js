@@ -1,6 +1,5 @@
 import mongoose from "mongoose"
 import mongoosePaginate from 'mongoose-paginate-v2'
-import { NotFoundError } from "../models/Errors.js"
 
 const productsSchema = new mongoose.Schema(
   {
@@ -23,75 +22,36 @@ class ProductsDaoMongoose {
   constructor() {
     this.#productsDb = mongoose.model('products', productsSchema)
   }
-  async getProducts() {
-    try{
-      const products = await this.#productsDb.find().lean()
-      return products
-    }
-    catch(error){
-      throw error
-    }
+  async createProduct(product) {
+    return await this.#productsDb.create(product)
   }
-  async addProduct(product) {
-    try{
-      // Checking if code isnt repeated
-      const repeated = await this.#productsDb.findOne({ code: product.code })
-      if (repeated) throw new Error('Code already exists')
-      let saved = await this.#productsDb.create(product)
-      return saved
+  async getProducts(query, options) {
+    let products
+    if(!options && !query) { 
+      products = await this.#productsDb.find().lean()
     }
-    catch(error){
-      throw error
+    else{
+      products = await this.#productsDb.paginate(query, options)
+      products = JSON.parse(JSON.stringify(products)) // There isnt a lean option!
     }
+    return products
   }
   async getProductByID(id) {
-    try{
-      let product = await this.#productsDb.findById(id).lean()
-      if (!product) throw new NotFoundError('Product not found')
-      return product
-    }
-    catch(error){
-      throw error
-    }
+    return await this.#productsDb.findById(id).lean()
   }
-  async getPage(query, options) {
-    try{
-      let page = await this.#productsDb.paginate(query, options)
-      page = JSON.parse(JSON.stringify(page)) // There isnt a lean option!
-      return page
-    }
-    catch(error){
-      throw error
-    }
+  async getProductByCode(code) {
+    return await this.#productsDb.findById(code).lean()
   }
   async updateProduct(id, newPropierties) {
-    try{
-      if (newPropierties.code) {
-        const repeated = await this.#productsDb.findOne({ code: newPropierties.code })
-        if (repeated) throw new Error('Code already exists')
-      }
-      let product = await this.#productsDb.findById(id)
-      if (!product) throw new NotFoundError('Product not found')
-      for (const prop in newPropierties) {
-        product[prop] = newPropierties[prop]
-      }
-      product.save()
-      return product
-    }
-    catch(error){
-      throw error
-    }
+    let product = await this.#productsDb.findById(id)
+    for (const prop in newPropierties) { product[prop] = newPropierties[prop] }
+    product.save()
+    return product
   }
   async deleteProduct(id) {
-    try{
-      let product = await this.#productsDb.findById(id)
-      if (!product) throw new NotFoundError('Product not found')
-      product.deleteOne()
-      return product
-    }
-    catch(error){
-      throw error
-    }
+    let product = await this.#productsDb.findById(id)
+    product.deleteOne()
+    return product
   }
 }
 

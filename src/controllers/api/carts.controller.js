@@ -1,9 +1,9 @@
-import { cartsDao } from '../../daos/carts.dao.mongoose.js'
+import { cartsService } from '../../services/carts.service.js'
 
 export async function handleGetOne(req, res, next) {
   try{
     let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const cart = await cartsDao.getCartByID(cartID)
+    const cart = await cartsService.getCartByID(cartID)
     res.status(200).send({cart: cart})
   }
   catch(error){
@@ -13,7 +13,7 @@ export async function handleGetOne(req, res, next) {
 
 export async function handleCreate(req, res, next) {
   try{
-    const created = await cartsDao.createEmptyCart()
+    const created = await cartsService.createEmptyCart()
     res.status(201).json({created: created})
   }
   catch(error){
@@ -24,7 +24,7 @@ export async function handleCreate(req, res, next) {
 export async function handleUpdate(req, res, next) {
   try{
     let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const newCart = await cartsDao.updateCart(cartID, req.body)
+    const newCart = await cartsService.updateCart(cartID, req.body)
     res.status(200).json({updatedCart: newCart})
   }
   catch(error){
@@ -35,7 +35,7 @@ export async function handleUpdate(req, res, next) {
 export async function handleUpdateOne(req, res, next) {
   try{
     let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const newCart = await cartsDao.updateProduct(cartID, req.params.pid, req.body.quantity)
+    const newCart = await cartsService.updateProduct(cartID, req.params.pid, req.body.quantity)
     res.status(200).json({updatedCart: newCart})
   }
   catch(error){
@@ -47,7 +47,7 @@ export async function handleUpdateOne(req, res, next) {
 export async function handleDeleteProduct(req, res, next) {
   try{
     let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const newCart = await cartsDao.deleteProduct(cartID, req.params.pid)
+    const newCart = await cartsService.deleteProduct(cartID, req.params.pid)
     res.status(200).json({updatedCart: newCart})
   }
   catch(error){
@@ -58,7 +58,7 @@ export async function handleDeleteProduct(req, res, next) {
 export async function handleDelete(req, res, next) {
   try{
     let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const deleted = await cartsDao.deleteCart(cartID)
+    const deleted = await cartsService.deleteCart(cartID)
     res.status(200).json({deleted: deleted})
   }
   catch(error){

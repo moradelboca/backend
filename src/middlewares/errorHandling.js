@@ -30,7 +30,6 @@ function errorHandlingView(error, req, res, next) {
     default:
       res.status(500)
   }
-  next()
 }
 
 export function errorHandling(error, req, res, next) {

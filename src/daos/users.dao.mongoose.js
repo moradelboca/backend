@@ -1,5 +1,4 @@
 import mongoose from '../database/mongoose.js'
-import { NotFoundError } from '../models/Errors.js'
 
 const usersSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
@@ -17,35 +16,16 @@ class UsersDaoMongoose {
     this.#usersDb = mongoose.model('users', usersSchema)
   }
   async createUser(user) {
-    try{
-      let newUser = await this.#usersDb.create(user)
-      return newUser
-    }
-    catch(error){
-      throw error
-    }
+    return await this.#usersDb.create(user)
   }
   async getByEmail(email) {
-    try{
-      let user = await this.#usersDb.findOne({ email })
-      if (!user) throw new NotFoundError('User not found')
-      return user
-    }
-    catch(error){
-      throw error
-    }
+    return await this.#usersDb.findOne({ email })
   }
   async promoteToAdmin(email) {
-    try{
-      let user = await this.#usersDb.findOne({ email })
-      if (!user) throw new NotFoundError('User not found')
-      user.role = 'admin'
-      await user.save()
-      return user
-    }
-    catch(error){
-      throw error
-    }
+    let user = await this.#usersDb.findOne({ email })
+    user.role = 'admin'
+    await user.save()
+    return user
   }
 }
 
