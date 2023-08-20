@@ -1,9 +1,9 @@
 import { cartsService } from '../../services/carts.service.js'
+import { usersService } from '../../services/user.service.js'
 
 export async function handleGetOne(req, res, next) {
   try{
-    let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const cart = await cartsService.getCartByID(cartID)
+    const cart = await usersService.getCart(req.user.email)
     res.status(200).send({cart: cart})
   }
   catch(error){
@@ -23,8 +23,7 @@ export async function handleCreate(req, res, next) {
 
 export async function handleUpdate(req, res, next) {
   try{
-    let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const newCart = await cartsService.updateCart(cartID, req.body)
+    const newCart = await usersService.updateCart(req.user.email, req.body)
     res.status(200).json({updatedCart: newCart})
   }
   catch(error){
@@ -60,6 +59,16 @@ export async function handleDelete(req, res, next) {
     let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
     const deleted = await cartsService.deleteCart(cartID)
     res.status(200).json({deleted: deleted})
+  }
+  catch(error){
+    next(error)
+  }
+}
+
+export async function handlePurchase(req, res, next) {
+  try{
+    const purchase = await usersService.purchaseCart(req.user.email)
+    res.status(200).json({ticket: purchase})
   }
   catch(error){
     next(error)

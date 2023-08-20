@@ -4,4 +4,4 @@ import { onlyAuth } from '../../middlewares/auth.js'
 
 export const cartView = express.Router()
 
-cartView.get('/:cid', onlyAuth, handleCartView)
+cartView.get('/mycart', onlyAuth, handleCartView)

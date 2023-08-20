@@ -28,23 +28,23 @@ class CartsDaoMongoose {
     return await this.#cartsDb.findOne({ _id: id }).populate('products.product').lean()
   }
   async updateCart(id, products){
-    cart = await this.#cartsDb.findOne({ _id: id })
+    const cart = await this.#cartsDb.findOne({ _id: id })
     products.forEach( currentProduct => {
-      const productIndex = newCart.products.findIndex( p => p.product.toString() === currentProduct.product.toString() )
+      const productIndex = cart.products.findIndex( p => p.product.toString() === currentProduct.product.toString() )
       if (productIndex != -1) {
-        newCart.products[productIndex].quantity += currentProduct.quantity
+        cart.products[productIndex].quantity += currentProduct.quantity
       } else {
-        newCart.products.push(currentProduct)
+        cart.products.push(currentProduct)
       }
     })
     await cart?.save()
     return cart
   }
   async deleteProduct(cartID, productID){
-    const cart = await this.#cartsDb.findOne({ _id: cartID })
-    cart.products = newCart.products.filter( product => product._id.toString() !== productID )
+    const cart = await this.#cartsDb.findById(cartID)
+    cart.products = cart.products.filter( p => p.product.toString() !== productID.toString() )
     await cart?.save()
-    return cart
+    return cart.toObject()
   }
   async deleteCart(id){
     let cart = await this.#cartsDb.findById(id)
@@ -52,7 +52,7 @@ class CartsDaoMongoose {
     return cart
   }
   async updateProduct(cartID, productID, quantity){
-    const cart = await this.#cartsDb.findOne({ _id: cartID })
+    const cart = await this.#cartsDb.findById(cartID )
     cart.products = cart.products.map( product => {
       if (product._id.toString() === productID) {
         product.quantity += quantity

@@ -17,9 +17,6 @@ products.forEach( product => {
   })
 })
 
-const carritoLink = document.getElementById('carrito-link')
-carritoLink.href = `/carts/mycart`
-
 const logoutButton = document.getElementById('logout-button')
 logoutButton.addEventListener('click', async () => {
   const { status } = await fetch('/api/users/logout', {
@@ -32,4 +29,16 @@ logoutButton.addEventListener('click', async () => {
   if (status === 200) {
     window.location.href = '/'
   }
+})
+
+const buyCartButton = document.getElementById('buycart-button')
+buyCartButton.addEventListener('click', async () => {
+  const { status } = await fetch('/api/carts/mycart/purchase', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+  if (status === 200) { console.log('purchased') }
 })

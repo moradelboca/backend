@@ -1,6 +1,7 @@
 import { cartsRepository } from "../repositories/carts.repository.js"
 import { NotFoundError } from "../models/Errors.js"
 import { productsService } from "./products.service.js"
+import { ticketService } from "./ticket.service.js"
 
 class CartsService{
   constructor(repository) {
@@ -34,10 +35,8 @@ class CartsService{
   }
   async updateCart(id, products) {
     try{
-      const cart = await this.repository.getCartByID(id)
-      if (!cart) throw new NotFoundError('Cart wasnt found.')
+      const cart = await this.getCartByID(id)
       products.forEach( currentProduct => {
-        // Throws an error if the product doesnt exist
         productsService.getProductByID(currentProduct.product)
       })
       return await this.repository.updateCart(id, products)
@@ -48,9 +47,8 @@ class CartsService{
   }
   async deleteProduct(cartID, productID) {
     try{
-      const cart = await this.repository.getCartByID(cartID)
-      if (!cart) throw new NotFoundError('Cart wasnt found.')
-      const productIndex = cart.products.findIndex( p => p.product.toString() === productID )
+      const cart = await this.getCartByID(cartID)
+      const productIndex = cart.products.findIndex( p => p.product._id.toString() === productID.toString() )
       if (productIndex === -1) throw new NotFoundError('Product wasnt found.')
       return await this.repository.deleteProduct(cartID, productID)
     }
@@ -60,8 +58,7 @@ class CartsService{
   }
   async deleteCart(id) {
     try{
-      const cart = await this.repository.getCartByID(id)
-      if (!cart) throw new NotFoundError('Cart wasnt found.')
+      const cart = await this.getCartByID(id)
       return await this.repository.deleteCart(id)
     }
     catch(error){
@@ -70,11 +67,32 @@ class CartsService{
   }
   async updateProduct(cartID, productID, quantity) {
     try{
-      const cart = await this.repository.getCartByID(cartID)
-      if (!cart) throw new NotFoundError('Cart wasnt found.')
+      const cart = await this.getCartByID(cartID)
       const product = cart.products.find( p => p.product.toString() === productID )
       if (!product) throw new NotFoundError('Product wasnt found.')
       return await this.repository.updateProduct(cartID, productID, quantity)
+    }
+    catch(error){
+      throw error
+    }
+  }
+  async purchaseCart(id, purchaserEmail) {
+    try{
+      const cart = await this.getCartByID(id)
+      // For each product, check if it exists and if there is enough stock.
+      let productsWithoutStock = []
+      let boughtProducts = []
+      for (const productData of cart.products) {
+        if (productData.quantity > productData.product.stock) productsWithoutStock.push(productData)
+        else {
+          boughtProducts.push({ ...productData })
+          await this.deleteProduct(id, productData.product._id)
+          await productsService.updateProduct(productData.product._id, {stock: productData.product.stock - productData.quantity})
+        }
+      }
+      if (boughtProducts.length === 0) throw new Error('No products were bought.')
+      const ticket = await ticketService.createTicket(boughtProducts, purchaserEmail, id)
+      return {boughtProducts: boughtProducts, productsWithoutStock: productsWithoutStock, ticket: ticket}
     }
     catch(error){
       throw error

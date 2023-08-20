@@ -63,7 +63,6 @@ class ProductsService{
         if (repeated) throw new Error('Code already exists')
       }
       let product = await this.getProductByID(id)
-      if (!product) throw new NotFoundError('Product not found')
       for (const prop in newPropierties) {
         if (prop == 'id') throw new Error('ID cant be modified')
         if (!prop in product) throw new Error('Invalid property')
@@ -78,7 +77,6 @@ class ProductsService{
   async deleteProduct(id) {
     try{
       let product = await this.getProductByID(id)
-      if (!product) throw new NotFoundError('Product not found')
       const deleted = await this.repository.deleteProduct(id)
       return product
     }

@@ -29,7 +29,9 @@ class UsersService{
   }
   async getByEmail(email) {
     try{
-      return await this.repository.getByEmail(email)
+      const user = await this.repository.getByEmail(email)
+      if (!user) throw new NotFoundError('User wasnt found.')
+      return user
     }
     catch(error){
       throw error
@@ -41,6 +43,34 @@ class UsersService{
       if (!user) throw new NotFoundError('User wasnt found.')
       if (user.role === 'admin') throw new Error('User is already an admin.')
       return await this.repository.promoteToAdmin(email)
+    }
+    catch(error){
+      throw error
+    }
+  }
+  async getCart(email) {
+    try{
+      let user = await this.getByEmail(email)
+      return await cartsService.getCartByID(user.cart)
+    }
+    catch(error){
+      throw error
+    }
+  }
+  async purchaseCart(email) {
+    try{
+      let user = await this.getByEmail(email)
+      const a = await cartsService.purchaseCart(user.cart, email)
+      return await cartsService.purchaseCart(user.cart, email)
+    }
+    catch(error){
+      throw error
+    }
+  }
+  async updateCart(email, products) {
+    try{
+      let user = await this.getByEmail(email)
+      return await cartsService.updateCart(user.cart, products)
     }
     catch(error){
       throw error
