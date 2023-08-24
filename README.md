@@ -22,3 +22,4 @@ Por ejemplo, para clonar el desafio 4:
 - 8 - [Refactor a nuestro login](https://github.com/moradelboca/backend/tree/desafio9)
 - 9 - [Reestructura de nuestro servidor](https://github.com/moradelboca/backend/tree/desafio10)
 - 10 - [Mejorando la arquitectura del servidor](https://github.com/moradelboca/backend/tree/desafio11)
+- 11 - [Implementacion de logger](https://github.com/moradelboca/backend/tree/desafio12)
