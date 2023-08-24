@@ -60,7 +60,6 @@ class UsersService{
   async purchaseCart(email) {
     try{
       let user = await this.getByEmail(email)
-      const a = await cartsService.purchaseCart(user.cart, email)
       return await cartsService.purchaseCart(user.cart, email)
     }
     catch(error){

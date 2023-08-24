@@ -45,6 +45,7 @@ export async function handleGetOne(req, res, next) {
 export async function handleAddOne(req, res, next) {
   try{
     let id = await productsService.createProduct( req.body )
+    req.logger.info(`Product created with id: ${id}`)
     res.status(200).json({productId:id})
   }
   catch(error){
@@ -55,6 +56,7 @@ export async function handleAddOne(req, res, next) {
 export async function handleUpdateOne(req, res, next) {
   try{
     const updatedProduct = await productsService.updateProduct(req.params.pid, req.body)
+    req.logger.info(`Product with id ${req.params.pid} was updated.`)
     res.send({ updatedProduct: updatedProduct })
   }
   catch(error){
@@ -65,6 +67,7 @@ export async function handleUpdateOne(req, res, next) {
 export async function handleDeleteOne(req, res, next) {
   try{
     const deleted = await productsService.deleteProduct(req.params.pid)
+    req.logger.info(`Product with id ${req.params.pid} was deleted.`)
     res.send({ deletedProduct: deleted })
   }
   catch(error){

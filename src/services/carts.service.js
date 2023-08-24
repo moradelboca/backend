@@ -90,7 +90,7 @@ class CartsService{
           await productsService.updateProduct(productData.product._id, {stock: productData.product.stock - productData.quantity})
         }
       }
-      if (boughtProducts.length === 0) throw new Error('No products were bought.')
+      if (boughtProducts.length === 0) throw new Error('No products were bought')
       const ticket = await ticketService.createTicket(boughtProducts, purchaserEmail, id)
       return {boughtProducts: boughtProducts, productsWithoutStock: productsWithoutStock, ticket: ticket}
     }

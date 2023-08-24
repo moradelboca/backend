@@ -14,6 +14,7 @@ import { usersRouter } from './routes/api/users.route.js'
 import { userAuthView } from './routes/views/userAuthView.route.js'
 import { passportInitialize, passportSession } from './middlewares/passport.js'
 import { errorHandling } from './middlewares/errorHandling.js'
+import { logger } from "./middlewares/logger.js";
 
 // Express server
 export const app = express()
@@ -44,6 +45,8 @@ app.use(session({
 
 // Passport
 app.use(passportInitialize, passportSession)
+// Logger
+app.use(logger)
 //Handlebars view
 app.use('/', homeView)
 app.use('/products', productsView)

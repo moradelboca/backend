@@ -1,19 +1,15 @@
-import { User } from "../../models/Users.js"
-import { cartsDao } from "../../daos/carts.dao.mongoose.js"
-import { usersDao } from "../../daos/users.dao.mongoose.js"
+import {usersService} from "../../services/user.service.js"
 
 export async function handleRegister(req, res, next) {
   try{
-    const { email, password, first_name, last_name, age, role } = req.body
-    const cart = await cartsDao.createEmptyCart()
-    const user = new User(email, first_name, last_name, password, age, role, cart._id)
-    await usersDao.createUser(user)
-    delete user.password
+    const user = await usersService.createUser(req.body)
+    req.logger.info(`User ${user.email} was created`)
     // Logging in user after registering.
     req.login(user, error => {
       if (error) {
         res.status(400).json({ errorMsg: error.message })
       } else {
+        req.logger.info(`User ${user.email} was logged in`)
         res.status(200).json(req.user)
       }
     })
@@ -25,6 +21,7 @@ export async function handleRegister(req, res, next) {
 
 export async function handleLogin(req, res, next) {
   try{
+    req.logger.info(`User ${req.user.email} was logged in`)
     res.status(201).json(req.user)
   }
   catch(error){
@@ -34,6 +31,7 @@ export async function handleLogin(req, res, next) {
 
 export async function handleGithubCallback(req, res, next) {
   try{
+    req.logger.info(`User ${req.user.email} was logged in`)
     res.redirect('/')
   }
   catch(error){
@@ -42,7 +40,14 @@ export async function handleGithubCallback(req, res, next) {
 }
 
 export async function handleLogout(req, res, next) {
-  req.logout(err => {
-    res.status(200).json({msg: 'Logged out'})
-  })
+  try{
+    const user = req.user.email
+    req.logout(err => {
+      req.logger.info(`User ${user} was logged out`)
+      res.status(200).json({msg: 'Logged out'})
+    })
+  }
+  catch(error){
+    next(error)
+  }
 }

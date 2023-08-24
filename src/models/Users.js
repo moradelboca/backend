@@ -1,4 +1,4 @@
-import { hash } from '../utils.js'
+import { hash } from '../utils/utils.js'
 
 export class User {
   constructor(email, first_name, last_name, password, age, role='user', cartID) {
