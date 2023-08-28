@@ -4,4 +4,4 @@
 
 ## Consigna: 
 
-![Consigna 1](https://i.ibb.co/cCwTTbV/Screenshot-from-2023-08-24-03-29-10.png)
+![Consigna 1](https://i.ibb.co/ZRrxc3Q/Screenshot-from-2023-08-28-04-16-13.png)
