@@ -23,3 +23,4 @@ Por ejemplo, para clonar el desafio 4:
 - 9 - [Reestructura de nuestro servidor](https://github.com/moradelboca/backend/tree/desafio10)
 - 10 - [Mejorando la arquitectura del servidor](https://github.com/moradelboca/backend/tree/desafio11)
 - 11 - [Implementacion de logger](https://github.com/moradelboca/backend/tree/desafio12)
+  - 12 - [Documentacion de la API](https://github.com/moradelboca/backend/tree/desafio13)
