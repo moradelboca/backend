@@ -1,0 +1,52 @@
+components:
+  requestBodies:
+    CreateProductData:
+      type: object
+      required:
+        - title
+        - description
+        - code
+        - price
+        - stock
+        - category
+        - thumbnails
+        - status
+      properties:
+        title:
+          type: string
+          description: The title of the product. Must be less than 30 characters long.
+        description:
+          type: string
+          description: The description of the product. Must be less than 100 characters long.
+        code:
+          type: string
+          description: The code of the product. Must be less than 20 characters long. Cant be repeated.
+          unique: true
+        price:
+          type: number
+          description: The price of the product. Must be a positive number
+        thumbnails:
+          type: array
+          description: The URLs of the product thumbnail.
+          default: []
+          items:
+            type: string
+        stock:
+          type: number
+          description: The stock of the product. Must be a positive number
+        category:
+          type: string
+          description: The category of the product. Must be less than 30 characters long.
+        status:
+          type: boolean
+          description: The status of the product.
+          default: true
+      example:
+        title: Earring
+        description: Blue pair of earrings
+        price: 40
+        thumbnails: [ http://photo1.url.png, http://photo2.url.png ]
+        code: BC-12
+        stock: 102
+        category: Jewelry
+        status: true

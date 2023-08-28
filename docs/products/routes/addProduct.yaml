@@ -1,0 +1,21 @@
+paths:
+  /api/products:
+    post:
+      summary: Creates a new product. User needs to be logged in. User needs to be an administrator.
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateProductData'
+      responses:
+        "201":
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Invalid product data

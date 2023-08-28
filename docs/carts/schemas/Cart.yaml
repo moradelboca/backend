@@ -1,0 +1,34 @@
+# Cart
+components:
+  schemas:
+    Cart:
+      type: object
+      required:
+        - id
+        - products
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the cart.
+        products:
+          type: array
+          description: List that contains the products in the cart and their quantities.
+          items:
+            type: object
+            required:
+              - product
+              - quantity
+            properties:
+              product:
+                type: string
+                description: The id of the product.
+              quantity:
+                type: number
+                description: The quantity of the product.
+      example:
+        id: 3j5k2hr3-t5u6-365n-sk85-h58sk24ughd7
+        products:
+          - product: 4ughd7-3658fn-sk85d-h58sk
+            quantity: 2
+          - product: 4ughd7-3658fn-sk85d-h58sk
+            quantity: 1

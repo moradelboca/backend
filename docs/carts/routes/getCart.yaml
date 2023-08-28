@@ -1,0 +1,15 @@
+paths:
+  /api/carts/mycart:
+    get:
+      summary: Get cart own cart. User must be logged in.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: A cart object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "404":
+          description: Cart not found.

@@ -1,0 +1,22 @@
+# Cart
+components:
+  requestBodies:
+    ProductsInCart:
+      type: array
+      items:
+        type: object
+        required:
+          - product
+          - quantity
+        properties:
+          product:
+            type: string
+            description: The id of the product.
+          quantity:
+            type: number
+            description: The quantity of the product. Cant be a negative number
+      example:
+        - product: 4ughd7-3658fn-sk85d-h58sk
+          quantity: 2
+        - product: 4ughd7-3658fn-sk85d-h58sk
+          quantity: 1

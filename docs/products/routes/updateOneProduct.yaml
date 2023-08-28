@@ -1,0 +1,21 @@
+paths:
+  /api/products:
+    put:
+      summary: Updates properties of a product. At least one property from the body is required.  User needs to be logged in. User needs to be an administrator.
+      tags:
+        - Products
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/CreateProductData'
+      responses:
+        "201":
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "400":
+          description: Invalid product data

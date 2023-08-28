@@ -48,7 +48,7 @@ class CartsService{
   async deleteProduct(cartID, productID) {
     try{
       const cart = await this.getCartByID(cartID)
-      const productIndex = cart.products.findIndex( p => p.product._id.toString() === productID.toString() )
+      const productIndex = cart.products.findIndex( p => p.product.id.toString() === productID.toString() )
       if (productIndex === -1) throw new NotFoundError('Product wasnt found.')
       return await this.repository.deleteProduct(cartID, productID)
     }
@@ -86,8 +86,8 @@ class CartsService{
         if (productData.quantity > productData.product.stock) productsWithoutStock.push(productData)
         else {
           boughtProducts.push({ ...productData })
-          await this.deleteProduct(id, productData.product._id)
-          await productsService.updateProduct(productData.product._id, {stock: productData.product.stock - productData.quantity})
+          await this.deleteProduct(id, productData.product.id)
+          await productsService.updateProduct(productData.product.id, {stock: productData.product.stock - productData.quantity})
         }
       }
       if (boughtProducts.length === 0) throw new Error('No products were bought')

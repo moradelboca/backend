@@ -19,7 +19,7 @@ class UsersService{
         user.last_name,
         user.age,
         user.role,
-        cart._id
+        cart.id
       )
       return await this.repository.createUser(user)
     }

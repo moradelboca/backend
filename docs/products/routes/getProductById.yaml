@@ -1,0 +1,21 @@
+paths:
+  /api/products/{id}:
+    get:
+      summary: Get a product by ID. User needs to be logged in.
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          description: ID of the product to return.
+          required: true
+          type: string
+      responses:
+        "200":
+          description: A product object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        "404":
+          description: Product not found.

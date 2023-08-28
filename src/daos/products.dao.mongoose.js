@@ -3,6 +3,8 @@ import mongoosePaginate from 'mongoose-paginate-v2'
 
 const productsSchema = new mongoose.Schema(
   {
+    _id: false,
+    id: { type: String, required: true, unique: true },
     title: { type: String, required: true },
     description: { type: String, required: true },
     code: { type: String, required: true },
@@ -37,19 +39,19 @@ class ProductsDaoMongoose {
     return products
   }
   async getProductByID(id) {
-    return await this.#productsDb.findById(id).lean()
+    return await this.#productsDb.findOne({ id: id }).lean()
   }
   async getProductByCode(code) {
-    return await this.#productsDb.findById(code).lean()
+    return await this.#productsDb.findOne({ code: code }).lean()
   }
-  async updateProduct(id, newPropierties) {
-    let product = await this.#productsDb.findById(id)
-    for (const prop in newPropierties) { product[prop] = newPropierties[prop] }
+  async updateProduct(id, newProperties) {
+    let product = await this.#productsDb.findOne({ id: id })
+    for (const prop in newProperties) { product[prop] = newProperties[prop] }
     product.save()
     return product
   }
   async deleteProduct(id) {
-    let product = await this.#productsDb.findById(id)
+    let product = await this.#productsDb.findOne({ id: id })
     product.deleteOne()
     return product
   }

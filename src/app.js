@@ -14,16 +14,17 @@ import { usersRouter } from './routes/api/users.route.js'
 import { userAuthView } from './routes/views/userAuthView.route.js'
 import { passportInitialize, passportSession } from './middlewares/passport.js'
 import { errorHandling } from './middlewares/errorHandling.js'
-import { logger } from "./middlewares/logger.js";
+import { logger } from "./middlewares/logger.js"
+import { docsRouter } from './routes/api/documentation.route.js'
 
 // Express server
 export const app = express()
 
 // Handlebars config
 app.engine('handlebars', handlebars.engine())
-app.set('views', './views')
+app.set('views', '../views')
 app.set('view engine', 'handlebars')
-app.use(express.static('./public'))
+app.use(express.static('../public'))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended:true }))
@@ -56,5 +57,6 @@ app.use('/auth', userAuthView)
 app.use('/api/products', productsRouter)
 app.use('/api/carts', cartsRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/docs', docsRouter)
 //Error handling
 app.use(errorHandling)

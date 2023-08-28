@@ -9,6 +9,9 @@ function errorHandlingApi(error, req, res, next) {
     case 'NOT_FOUND_ERROR':
       res.status(404)
       break
+    case 'INVALID_DATA_ERROR':
+      res.status(400)
+      break
     default:
       res.status(500)
   }
@@ -27,6 +30,9 @@ function errorHandlingView(error, req, res, next) {
       break
     case 'NOT_FOUND_ERROR':
       res.status(404)
+      break
+    case 'INVALID_DATA_ERROR':
+      res.status(400)
       break
     default:
       res.status(500)

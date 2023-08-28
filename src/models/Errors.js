@@ -18,3 +18,10 @@ export class NotFoundError extends Error {
     this.type = 'NOT_FOUND_ERROR'
   }
 }
+
+export class InvalidDataError extends Error {
+  constructor(message='Invalid data provided') {
+    super(message)
+    this.type = 'INVALID_DATA_ERROR'
+  }
+}

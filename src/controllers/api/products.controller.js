@@ -2,7 +2,7 @@ import { productsService } from "../../services/products.service.js"
 
 export async function handleGetAll(req, res, next) {
   try{
-    const { limit=10, page=1, sort, category, status } = req.query
+    const { limit=10, page=1, sort, category, status=true } = req.query
     // Defining filter parameters
     let query = {}
     if (category) {query.category = category}
@@ -13,7 +13,7 @@ export async function handleGetAll(req, res, next) {
       {
         limit,
         page,
-        sort: { category:sort }
+        sort: { price:sort }
       }
     )
     res.status(200).json({

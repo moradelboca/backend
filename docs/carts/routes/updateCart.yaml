@@ -1,0 +1,21 @@
+paths:
+  /api/carts/mycart:
+    put:
+      summary: Add products to the cart. User needs to be logged in.
+      tags:
+        - Carts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/ProductsInCart'
+      responses:
+        "201":
+          description: Cart updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        "400":
+          description: Invalid input data

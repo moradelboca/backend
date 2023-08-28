@@ -1,0 +1,55 @@
+paths:
+  /api/carts/mycart/purchase:
+    get:
+      summary: Purchase user's cart. User must be logged in.
+      tags:
+        - Carts
+      responses:
+        "200":
+          description: An object that contains the ticket, buy products and products that couldn't be bought.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  boughtProducts:
+                    type: array
+                    description: The products that were bought.
+                    items:
+                      type: string
+                  productsWithoutStock:
+                    type: array
+                    description: The products that couldn't be bought because they don't have enough stock.
+                    items:
+                      type: string
+                  ticket:
+                    type: object
+                    description: The ticket of the purchase.
+                    properties:
+                      code:
+                        type: string
+                        description: Ticket code. The same as the cart id.
+                      puncharse_datetime:
+                        type: string
+                        description: The date of the purchase.
+                      amount:
+                        type: number
+                        description: The total amount of the purchase.
+                      purchaser:
+                        type: string
+                        description: The email of the user that made the purchase.
+              example:
+                boughtProducts:
+                  - 4ughd7-3658fn-sk85d-h58sk
+                  - 4u324f-3dasfn-sk85d-12sds
+                productsWithoutStock:
+                  - asd234-3shyfn-sk85d-haaa2
+                ticket:
+                  code: 4uofj7-3658fn-sk85d-sad33
+                  puncharse_datetime: 2021-05-05T12:00:00.000Z
+                  amount: 100
+                  purchaser: username@gmail.com
+        "404":
+          description: Cart not found.
+        "500":
+          description: Products don't have enough stock.

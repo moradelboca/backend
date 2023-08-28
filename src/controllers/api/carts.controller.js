@@ -11,17 +11,6 @@ export async function handleGetOne(req, res, next) {
   }
 }
 
-export async function handleCreate(req, res, next) {
-  try{
-    const created = await cartsService.createEmptyCart()
-    req.logger.debug(`Cart ${created._id} was created`)
-    res.status(201).json({created: created})
-  }
-  catch(error){
-    next(error)
-  }
-}
-
 export async function handleUpdate(req, res, next) {
   try{
     const newCart = await usersService.updateCart(req.user.email, req.body)
@@ -33,36 +22,11 @@ export async function handleUpdate(req, res, next) {
   }
 }
 
-export async function handleUpdateOne(req, res, next) {
-  try{
-    let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const newCart = await cartsService.updateProduct(cartID, req.params.pid, req.body.quantity)
-    req.logger.debug(`Product ${req.params.pid} from cart ${newCart._id} was updated`)
-    res.status(200).json({updatedCart: newCart})
-  }
-  catch(error){
-    next(error)
-  }
-
-}
-
 export async function handleDeleteProduct(req, res, next) {
   try{
-    let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const newCart = await cartsService.deleteProduct(cartID, req.params.pid)
+    const newCart = await cartsService.deleteProduct(req.user.cart, req.params.pid)
     req.logger.debug(`Product ${req.params.pid} from cart ${newCart._id} was deleted`)
     res.status(200).json({updatedCart: newCart})
-  }
-  catch(error){
-    next(error)
-  }
-}
-
-export async function handleDelete(req, res, next) {
-  try{
-    let cartID = req.params.cid == 'mycart' ? req.user.cart : req.params.cid
-    const deleted = await cartsService.deleteCart(cartID)
-    res.status(200).json({deleted: deleted})
   }
   catch(error){
     next(error)

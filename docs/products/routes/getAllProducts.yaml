@@ -1,0 +1,72 @@
+paths:
+  /api/products:
+    get:
+      summary: Get all products paginated. User needs to be logged in.
+      tags:
+        - Products
+      parameters:
+        - name: limit
+          in: query
+          description: Limit of products per page.
+          required: false
+          type: number
+          default: 10
+        - name: page
+          in: query
+          description: Page number.
+          required: false
+          type: number
+          default: 1
+        - name: category
+          in: query
+          description: Category of the products to return.
+          required: false
+          type: string
+        - name: sort
+          in: query
+          description: Sort the products to return by price.
+          required: false
+          type: boolean
+          enum:
+            - asc
+            - desc
+        - name: status
+          in: query
+          description: Status of the products to return.
+          required: false
+          type: boolean
+          default: true
+      responses:
+        "200":
+          description: A list of products.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payload:
+                    type: array
+                    description: The list of products.
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  totalPages:
+                    type: number
+                    description: The total number of pages.
+                  hasPrevPage:
+                    type: boolean
+                    description: If there is a previous page.
+                  hasNextPage:
+                    type: boolean
+                    description: If there is a next page.
+                  prevPage:
+                    type: number
+                    description: The previous page number.
+                  nextPage:
+                    type: number
+                    description: The next page number.
+                  prevLink:
+                    type: string
+                    description: The previous page link.
+                  nextLink:
+                    type: string
+                    description: The next page link.
